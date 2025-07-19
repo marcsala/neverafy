@@ -1,0 +1,48 @@
+<section class="registration-section" id="registro">
+    <div class="container">
+        <div class="registration-container">
+            <div class="registration-card animate-on-scroll">
+                <div class="registration-header">
+                    <div class="registration-logo">🥬</div>
+                    <h2 class="registration-title">¡Únete a Neverafy!</h2>
+                    <p class="registration-subtitle">Empieza gratis y transforma tu nevera en 2 minutos</p>
+                </div>
+
+                <form class="registration-form" onsubmit="handleRegistration(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Nombre completo</label>
+                        <input class="form-input" type="text" id="name" name="name" placeholder="Tu nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-input" type="email" id="email" name="email" placeholder="tu@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Contraseña</label>
+                        <input class="form-input" type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+
+                    <div class="form-checkbox-group">
+                        <input class="form-checkbox" type="checkbox" id="terms" name="terms" required>
+                        <label class="form-checkbox-label" for="terms">
+                            Acepto los <a href="#">términos y condiciones</a>
+                            y la <a href="#">política de privacidad</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="form-submit">
+                        <span style="font-size: 24px;">🚀</span>
+                        Crear mi cuenta gratis
+                    </button>
+                </form>
+
+                <div class="security-note">
+                    <span style="font-size: 18px; color: #16a34a;">🔒</span>
+                    <span>Tus datos están seguros y protegidos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
