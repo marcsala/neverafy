@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Star, Flame, DollarSign, Crown } from 'lucide-react';
 import NavBar from './components/NavBar';
 import DashboardView from './components/DashboardView';
@@ -9,6 +10,13 @@ import AchievementsView from './components/AchievementsView';
 import AnalyticsView from './components/AnalyticsView';
 import RecipeModal from './components/RecipeModal';
 import useStore from './store/useStore';
+import Features from './pages/Features';
+import Pricing from './pages/Pricing';
+import Testimonials from './pages/Testimonials';
+import HelpCenter from './pages/HelpCenter';
+import Contact from './pages/Contact';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 const FreshAlertPro = () => {
   const {
@@ -441,13 +449,13 @@ Las recetas deben ser:
 - Creativas pero realistas
 `;
 
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("http://localhost:3001/api/claude", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
+          model: "claude-3-haiku-20240307",
           max_tokens: 2000,
           messages: [
             { role: "user", content: prompt }
@@ -541,122 +549,132 @@ Las recetas deben ser:
     totalWasted: consumedProducts.filter(p => !p.wasConsumed).length
   };
 
-  // Renderizado principal
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">🥬 Neverafy</h1>
-          <p className="text-gray-600">Tu nevera, inteligente</p>
-          <div className="mt-2 inline-flex items-center gap-2 bg-gradient-to-r from-green-100 to-blue-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-            <span className="text-red-600">🇪🇸</span>
-            <span className="font-medium">Hecho en España</span>
-          </div>
-          <div className="mt-4 flex justify-center items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
-              <Star className="w-5 h-5 text-yellow-500" />
-              <span className="font-bold">{userStats.points} puntos</span>
+    <Router>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">🥬 Neverafy</h1>
+            <p className="text-gray-600">Tu nevera, inteligente</p>
+            <div className="mt-2 inline-flex items-center gap-2 bg-gradient-to-r from-green-100 to-blue-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+              <span className="text-red-600">🇪🇸</span>
+              <span className="font-medium">Hecho en España</span>
             </div>
-            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
-              <Flame className="w-5 h-5 text-orange-500" />
-              <span className="font-bold">{userStats.streak} días</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
-              <DollarSign className="w-5 h-5 text-green-500" />
-              <span className="font-bold">{userStats.totalSaved.toFixed(1)}€</span>
-            </div>
-            {isPremium && (
-              <div className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-full shadow-md">
-                <Crown className="w-5 h-5" />
-                <span className="font-bold">Premium</span>
+            <div className="mt-4 flex justify-center items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
+                <Star className="w-5 h-5 text-yellow-500" />
+                <span className="font-bold">{userStats.points} puntos</span>
               </div>
-            )}
+              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
+                <Flame className="w-5 h-5 text-orange-500" />
+                <span className="font-bold">{userStats.streak} días</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md">
+                <DollarSign className="w-5 h-5 text-green-500" />
+                <span className="font-bold">{userStats.totalSaved.toFixed(1)}€</span>
+              </div>
+              {isPremium && (
+                <div className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-2 rounded-full shadow-md">
+                  <Crown className="w-5 h-5" />
+                  <span className="font-bold">Premium</span>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Navigation */}
-        <NavBar
-          currentView={currentView}
-          setCurrentView={setCurrentView}
-          isPremium={isPremium}
-          userStats={userStats}
-        />
-
-        {/* Content based on current view */}
-        {currentView === 'dashboard' && <DashboardView stats={stats} userStats={userStats} notifications={notifications} setIsPremium={setIsPremium} />}
-        {currentView === 'products' && <ProductsView
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          categories={categories}
-          setShowAddForm={setShowAddForm}
-          showAddForm={showAddForm}
-          setCurrentView={setCurrentView}
-          newProduct={newProduct}
-          setNewProduct={setNewProduct}
-          addProduct={addProduct}
-          sortedProducts={sortedProducts}
-          getDaysToExpiry={getDaysToExpiry}
-          getAlertColor={getAlertColor}
-          markAsConsumed={markAsConsumed}
-          removeProduct={removeProduct}
-        />}
-        {currentView === 'camera' && <CameraView
-          isPremium={isPremium}
-          userStats={userStats}
-          handleImageSelect={handleImageSelect}
-          imagePreview={imagePreview}
-          setSelectedImage={setSelectedImage}
-          setImagePreview={setImagePreview}
-          setOcrResults={setOcrResults}
-          processImage={processImage}
-          isProcessingOCR={isProcessingOCR}
-          ocrResults={ocrResults}
-          addDetectedProductToFridge={addDetectedProductToFridge}
-          getAlertColor={getAlertColor}
-          getDaysToExpiry={getDaysToExpiry}
-          fileInputRef={fileInputRef}
-        />}
-        {currentView === 'recipes' && <RecipesView
-          isPremium={isPremium}
-          userStats={userStats}
-          products={products}
-          getDaysToExpiry={getDaysToExpiry}
-          generateAIRecipes={generateAIRecipes}
-          isGeneratingRecipes={isGeneratingRecipes}
-          generatedRecipes={generatedRecipes}
-          setSelectedRecipe={setSelectedRecipe}
-          getSuggestedRecipes={getSuggestedRecipes}
-        />}
-        {currentView === 'achievements' && <AchievementsView achievements={achievements} products={products} userStats={userStats} />}
-        {currentView === 'analytics' && <AnalyticsView stats={stats} userStats={userStats} isPremium={isPremium} setIsPremium={setIsPremium} />}
-
-        {/* Recipe Modal */}
-        {selectedRecipe && (
-          <RecipeModal
-            recipe={selectedRecipe}
-            onClose={() => setSelectedRecipe(null)}
+          {/* Navigation */}
+          <NavBar
+            currentView={currentView}
+            setCurrentView={setCurrentView}
+            isPremium={isPremium}
+            userStats={userStats}
           />
-        )}
 
-        {/* Footer */}
-        <div className="text-center mt-8 text-gray-500">
-          <p className="mb-2">Neverafy v1.0 | Nunca más desperdicies 🇪🇸</p>
-          <div className="flex justify-center gap-4 text-sm flex-wrap">
-            <span>🌍 {userStats.co2Saved.toFixed(1)}kg CO2 ahorrado</span>
-            <span>💰 {userStats.totalSaved.toFixed(1)}€ ahorrado</span>
-            <span>⭐ Nivel {userStats.level}</span>
-            <span>📸 {userStats.ocrUsed} análisis OCR</span>
-            <span>🍳 {userStats.recipesGenerated} recetas IA</span>
-          </div>
-          <div className="mt-3 text-xs text-gray-400">
-            <p>Desarrollado con ❤️ en España | Powered by Claude AI</p>
+          {/* Content based on current view */}
+          <Routes>
+            <Route path="/" element={<DashboardView stats={stats} userStats={userStats} notifications={notifications} setIsPremium={setIsPremium} />} />
+            <Route path="/products" element={<ProductsView
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              categories={categories}
+              setShowAddForm={setShowAddForm}
+              showAddForm={showAddForm}
+              setCurrentView={setCurrentView}
+              newProduct={newProduct}
+              setNewProduct={setNewProduct}
+              addProduct={addProduct}
+              sortedProducts={sortedProducts}
+              getDaysToExpiry={getDaysToExpiry}
+              getAlertColor={getAlertColor}
+              markAsConsumed={markAsConsumed}
+              removeProduct={removeProduct}
+            />} />
+            <Route path="/camera" element={<CameraView
+              isPremium={isPremium}
+              userStats={userStats}
+              handleImageSelect={handleImageSelect}
+              imagePreview={imagePreview}
+              setSelectedImage={setSelectedImage}
+              setImagePreview={setImagePreview}
+              setOcrResults={setOcrResults}
+              processImage={processImage}
+              isProcessingOCR={isProcessingOCR}
+              ocrResults={ocrResults}
+              addDetectedProductToFridge={addDetectedProductToFridge}
+              getAlertColor={getAlertColor}
+              getDaysToExpiry={getDaysToExpiry}
+              fileInputRef={fileInputRef}
+            />} />
+            <Route path="/recipes" element={<RecipesView
+              isPremium={isPremium}
+              userStats={userStats}
+              products={products}
+              getDaysToExpiry={getDaysToExpiry}
+              generateAIRecipes={generateAIRecipes}
+              isGeneratingRecipes={isGeneratingRecipes}
+              generatedRecipes={generatedRecipes}
+              setSelectedRecipe={setSelectedRecipe}
+              getSuggestedRecipes={getSuggestedRecipes}
+            />} />
+            <Route path="/achievements" element={<AchievementsView achievements={achievements} products={products} userStats={userStats} />} />
+            <Route path="/analytics" element={<AnalyticsView stats={stats} userStats={userStats} isPremium={isPremium} setIsPremium={setIsPremium} />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/testimonials" element={<Testimonials />} />
+            <Route path="/help" element={<HelpCenter />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+          </Routes>
+
+          {/* Recipe Modal */}
+          {selectedRecipe && (
+            <RecipeModal
+              recipe={selectedRecipe}
+              onClose={() => setSelectedRecipe(null)}
+            />
+          )}
+
+          {/* Footer */}
+          <div className="text-center mt-8 text-gray-500">
+            <p className="mb-2">Neverafy v1.0 | Nunca más desperdicies 🇪🇸</p>
+            <div className="flex justify-center gap-4 text-sm flex-wrap">
+              <span>🌍 {userStats.co2Saved.toFixed(1)}kg CO2 ahorrado</span>
+              <span>💰 {userStats.totalSaved.toFixed(1)}€ ahorrado</span>
+              <span>⭐ Nivel {userStats.level}</span>
+              <span>📸 {userStats.ocrUsed} análisis OCR</span>
+              <span>🍳 {userStats.recipesGenerated} recetas IA</span>
+            </div>
+            <div className="mt-3 text-xs text-gray-400">
+              <p>Desarrollado con ❤️ en España | Powered by Claude AI</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Router>
   );
 };
 
