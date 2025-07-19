@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Tu nevera, inteligente - Nunca más desperdicies comida",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -12,11 +11,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.52.0",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.0",
-    "express": "^5.1.0",
     "lucide-react": "^0.263.1",
-    "node-fetch": "^3.3.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.7.0",
