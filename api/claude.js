@@ -1,7 +1,15 @@
-// api/claude.js - Vercel Function para Claude API
+// api/claude.js - Vercel Serverless Function
 
 export default async function handler(req, res) {
-  // Solo permitir POST
+  // Solo permitir POST y OPTIONS
+  if (req.method === 'OPTIONS') {
+    // Handle CORS preflight
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -10,11 +18,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
 
   try {
     const { messages, max_tokens = 1500, model = "claude-sonnet-4-20250514" } = req.body;
@@ -25,8 +28,11 @@ export default async function handler(req, res) {
 
     // Verificar que tenemos la API key
     if (!process.env.CLAUDE_API_KEY) {
+      console.error('CLAUDE_API_KEY not found');
       return res.status(500).json({ error: 'Claude API key not configured' });
     }
+
+    console.log('Making request to Claude API...');
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -45,15 +51,20 @@ export default async function handler(req, res) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Claude API error: ${response.status} - ${errorText}`);
-      throw new Error(`Claude API error: ${response.status}`);
+      return res.status(response.status).json({ 
+        error: 'Claude API error',
+        details: errorText
+      });
     }
 
     const data = await response.json();
-    res.status(200).json(data);
+    console.log('Claude API response received successfully');
+    
+    return res.status(200).json(data);
 
   } catch (error) {
-    console.error('Claude API Error:', error);
-    res.status(500).json({ 
+    console.error('Internal server error:', error);
+    return res.status(500).json({ 
       error: 'Internal server error',
       message: error.message 
     });
