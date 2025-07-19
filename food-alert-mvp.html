@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neverafy - Mi Nevera</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/esbuild-wasm@0.14.39/esbuild.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="root"></div>
+    <script>
+      (async () => {
+        await esbuild.initialize({
+          wasmURL: 'https://unpkg.com/esbuild-wasm@0.14.39/esbuild.wasm'
+        });
+
+        const response = await fetch('food-alert-mvp.tsx');
+        const tsxCode = await response.text();
+
+        const result = await esbuild.transform(tsxCode, {
+          loader: 'tsx',
+          jsxFactory: 'React.createElement',
+          jsxFragment: 'React.Fragment'
+        });
+
+        const script = document.createElement('script');
+        script.textContent = result.code;
+        document.body.appendChild(script);
+      })();
+    </script>
+</body>
+</html>

@@ -4,10 +4,15 @@ import {
   Search, Filter, TrendingUp, Award, Target, ShoppingCart, 
   Leaf, DollarSign, Star, Zap, Clock, Users, BarChart3, 
   ChefHat, Bell, Settings, Trophy, Flame, Camera, Upload, 
-  Loader2, X, Sparkles, BookOpen, Timer, Users2
+  Loader2, X, Sparkles, BookOpen, Timer, Users2, LogOut
 } from 'lucide-react';
 
+const supabaseUrl = 'https://tbactydpgltluljssvym.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRiYWN0eWRwZ2x0bHVsanNzdnltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTQ0NDksImV4cCI6MjA2ODUzMDQ0OX0.q7VssmjbSLSiOXDZaXjVPrzrGCW1C8JIWQk0LZ8su7k'
+const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+
 const FreshAlertPro = () => {
+  const [session, setSession] = useState(null);
   const [currentView, setCurrentView] = useState('dashboard');
   const [products, setProducts] = useState([]);
   const [consumedProducts, setConsumedProducts] = useState([]);
@@ -104,8 +109,30 @@ const FreshAlertPro = () => {
     { id: 7, name: 'Chef IA', description: 'Genera 20 recetas con IA', icon: '🤖', unlocked: false, points: 150 }
   ];
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setSession(session)
+      } else {
+        window.location.href = 'neverafy-landing.html';
+      }
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+      if (!session) {
+        window.location.href = 'neverafy-landing.html';
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
   // Cargar datos al iniciar
   useEffect(() => {
+    if (!session) return;
     const savedProducts = localStorage.getItem('freshAlertProducts');
     const savedConsumed = localStorage.getItem('freshAlertConsumed');
     const savedStats = localStorage.getItem('freshAlertStats');
@@ -537,37 +564,50 @@ Las recetas deben ser:
     totalWasted: consumedProducts.filter(p => !p.wasConsumed).length
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
   // Componente de navegación
   const NavBar = () => (
     <div className="bg-white shadow-md rounded-lg p-4 mb-6">
-      <div className="flex flex-wrap gap-2">
-        {[
-          { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-          { id: 'products', label: 'Mi Nevera', icon: Package },
-          { id: 'camera', label: 'Smart Camera', icon: Camera, premium: !isPremium && userStats.ocrUsed >= 3 },
-          { id: 'recipes', label: 'Recetas IA', icon: ChefHat, premium: !isPremium && userStats.recipesGenerated >= 5 },
-          { id: 'achievements', label: 'Logros', icon: Trophy },
-          { id: 'analytics', label: 'Analytics', icon: TrendingUp }
-        ].map(item => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setCurrentView(item.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors relative ${
-                currentView === item.id
-                  ? 'bg-green-600 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <Icon size={18} />
-              {item.label}
-              {item.premium && (
-                <Star size={14} className="text-yellow-500" />
-              )}
-            </button>
-          );
-        })}
+      <div className="flex flex-wrap justify-between items-center gap-2">
+        <div className="flex flex-wrap gap-2">
+          {[
+            { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+            { id: 'products', label: 'Mi Nevera', icon: Package },
+            { id: 'camera', label: 'Smart Camera', icon: Camera, premium: !isPremium && userStats.ocrUsed >= 3 },
+            { id: 'recipes', label: 'Recetas IA', icon: ChefHat, premium: !isPremium && userStats.recipesGenerated >= 5 },
+            { id: 'achievements', label: 'Logros', icon: Trophy },
+            { id: 'analytics', label: 'Analytics', icon: TrendingUp }
+          ].map(item => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setCurrentView(item.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors relative ${
+                  currentView === item.id
+                    ? 'bg-green-600 text-white'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <Icon size={18} />
+                {item.label}
+                {item.premium && (
+                  <Star size={14} className="text-yellow-500" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-red-600 hover:bg-red-100 transition-colors"
+        >
+          <LogOut size={18} />
+          Cerrar Sesión
+        </button>
       </div>
     </div>
   );
@@ -1603,4 +1643,6 @@ const Crown = ({ size = 20, className = "" }) => (
   </svg>
 );
 
-export default FreshAlertPro;
+const domContainer = document.querySelector('#root');
+const root = ReactDOM.createRoot(domContainer);
+root.render(React.createElement(FreshAlertPro));

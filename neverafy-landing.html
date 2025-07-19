@@ -226,32 +226,89 @@
             document.body.style.overflow = 'auto';
         }
 
+        const supabaseUrl = 'https://tbactydpgltluljssvym.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRiYWN0eWRwZ2x0bHVsanNzdnltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTQ0NDksImV4cCI6MjA2ODUzMDQ0OX0.q7VssmjbSLSiOXDZaXjVPrzrGCW1C8JIWQk0LZ8su7k'
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey)
+
+        const authMessage = document.getElementById('auth-message');
+
+        function showMessage(message, type) {
+            authMessage.textContent = message;
+            authMessage.className = `auth-message ${type}`;
+            authMessage.style.display = 'block';
+        }
+
+        function switchTab(event, tabName) {
+            const tabcontent = document.getElementsByClassName("auth-tab-content");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            const tablinks = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            document.getElementById(tabName + '-form').style.display = "block";
+            event.currentTarget.className += " active";
+            authMessage.style.display = 'none';
+        }
+
         // Handle registration form
-        function handleRegistration(event) {
+        async function handleRegistration(event) {
             event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                password: formData.get('password')
-            };
-            
-            console.log('Registration data:', data);
-            
-            // Success animation
-            const button = event.target.querySelector('button[type="submit"]');
+            const form = event.target;
+            const email = form.elements.email.value;
+            const password = form.elements.password.value;
+            const button = form.querySelector('button[type="submit"]');
             const originalContent = button.innerHTML;
-            
-            button.innerHTML = '<span style="font-size: 24px;">✅</span> ¡Cuenta creada!';
-            button.style.background = '#16a34a';
-            
-            setTimeout(() => {
-                alert('¡Cuenta creada exitosamente! Te redirigimos a tu nevera inteligente...');
+
+            button.innerHTML = '<span style="font-size: 24px;">⌛</span> Creando...';
+            button.disabled = true;
+
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+            });
+
+            if (error) {
+                showMessage(`Error: ${error.message}`, 'error');
                 button.innerHTML = originalContent;
-                button.style.background = '';
-                event.target.reset();
-            }, 2000);
+                button.disabled = false;
+            } else {
+                showMessage('¡Registro exitoso! Revisa tu email para confirmar tu cuenta.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'food-alert-mvp.html';
+                }, 2000);
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const form = event.target;
+            const email = form.elements.email.value;
+            const password = form.elements.password.value;
+            const button = form.querySelector('button[type="submit"]');
+            const originalContent = button.innerHTML;
+
+            button.innerHTML = '<span style="font-size: 24px;">⌛</span> Accediendo...';
+            button.disabled = true;
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+                button.innerHTML = originalContent;
+                button.disabled = false;
+            } else {
+                showMessage('¡Inicio de sesión correcto! Redirigiendo...', 'success');
+                 setTimeout(() => {
+                    window.location.href = 'food-alert-mvp.html';
+                }, 1500);
+            }
         }
 
         // FAQ toggle
@@ -949,24 +1006,26 @@
                 <div class="registration-card animate-on-scroll">
                     <div class="registration-header">
                         <div class="registration-logo">🥬</div>
-                        <h2 class="registration-title">¡Únete a Neverafy!</h2>
+                        <h2 class="registration-title">¡Bienvenido a Neverafy!</h2>
                         <p class="registration-subtitle">Empieza gratis y transforma tu nevera en 2 minutos</p>
                     </div>
 
-                    <form class="registration-form" onsubmit="handleRegistration(event)">
+                    <!-- Tab buttons -->
+                    <div class="auth-tabs">
+                        <button class="tab-btn active" onclick="switchTab(event, 'register')">Crear Cuenta</button>
+                        <button class="tab-btn" onclick="switchTab(event, 'login')">Iniciar Sesión</button>
+                    </div>
+
+                    <!-- Registration Form -->
+                    <form id="register-form" class="registration-form auth-tab-content" onsubmit="handleRegistration(event)">
                         <div class="form-group">
-                            <label class="form-label" for="name">Nombre completo</label>
-                            <input class="form-input" type="text" id="name" name="name" placeholder="Tu nombre" required>
+                            <label class="form-label" for="register-email">Email</label>
+                            <input class="form-input" type="email" id="register-email" name="email" placeholder="tu@email.com" required>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="email">Email</label>
-                            <input class="form-input" type="email" id="email" name="email" placeholder="tu@email.com" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="password">Contraseña</label>
-                            <input class="form-input" type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" required>
+                            <label class="form-label" for="register-password">Contraseña</label>
+                            <input class="form-input" type="password" id="register-password" name="password" placeholder="Mínimo 6 caracteres" required>
                         </div>
 
                         <div class="form-checkbox-group">
@@ -1918,6 +1977,49 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Auth Tabs */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-green);
+            border-bottom-color: var(--primary-green);
+        }
+
+        .auth-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .auth-message.success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .auth-message.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
     </style>
 </head>
 <body>
@@ -2009,6 +2111,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neverafy - Tu nevera, inteligente | Nunca más desperdicies comida</title>
     <meta name="description" content="Organiza tu nevera, ahorra dinero y cuida el planeta. Neverafy usa IA para gestionar tu comida y eliminar el desperdicio.">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');

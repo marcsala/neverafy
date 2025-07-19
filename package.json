@@ -1,0 +1,15 @@
+{
+  "name": "neverafy",
+  "version": "1.0.0",
+  "description": "Tu nevera, inteligente",
+  "main": "food-alert-mvp.js",
+  "scripts": {
+    "build": "esbuild food-alert-mvp.tsx --bundle --outfile=food-alert-mvp.js --jsx-factory=React.createElement --jsx-fragment=React.Fragment"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.4",
+    "esbuild": "^0.21.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
