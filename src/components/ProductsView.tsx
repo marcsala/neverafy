@@ -1,0 +1,196 @@
+import React from 'react';
+import { Search, Plus, Camera, CheckCircle, Trash2, Package } from 'lucide-react';
+
+const ProductsView = ({
+  searchTerm,
+  setSearchTerm,
+  selectedCategory,
+  setSelectedCategory,
+  categories,
+  setShowAddForm,
+  showAddForm,
+  setCurrentView,
+  newProduct,
+  setNewProduct,
+  addProduct,
+  sortedProducts,
+  getDaysToExpiry,
+  getAlertColor,
+  markAsConsumed,
+  removeProduct
+}) => (
+  <div className="space-y-6">
+    {/* Controles */}
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="flex flex-col md:flex-row gap-4 mb-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Buscar productos..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <option value="all">Todas las categorías</option>
+          {categories.map(cat => (
+            <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          onClick={() => setShowAddForm(!showAddForm)}
+          className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200 flex items-center gap-2"
+        >
+          <Plus size={20} />
+          Agregar Manual
+        </button>
+
+        <button
+          onClick={() => setCurrentView('camera')}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200 flex items-center gap-2"
+        >
+          <Camera size={20} />
+          Usar Cámara
+        </button>
+      </div>
+    </div>
+
+    {/* Formulario agregar */}
+    {showAddForm && (
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-xl font-bold text-gray-800 mb-4">Nuevo Producto</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input
+            type="text"
+            placeholder="Nombre del producto"
+            value={newProduct.name}
+            onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
+            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <select
+            value={newProduct.category}
+            onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
+            ))}
+          </select>
+          <input
+            type="date"
+            value={newProduct.expiryDate}
+            onChange={(e) => setNewProduct({...newProduct, expiryDate: e.target.value})}
+            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            type="number"
+            placeholder="Cantidad"
+            min="1"
+            value={newProduct.quantity}
+            onChange={(e) => setNewProduct({...newProduct, quantity: parseInt(e.target.value)})}
+            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            type="number"
+            step="0.1"
+            placeholder="Precio aprox. (€)"
+            value={newProduct.price}
+            onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
+            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+        <div className="flex gap-2 mt-4">
+          <button
+            onClick={() => addProduct()}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200"
+          >
+            Agregar
+          </button>
+          <button
+            onClick={() => setShowAddForm(false)}
+            className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    )}
+
+    {/* Lista productos */}
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h3 className="text-xl font-bold text-gray-800 mb-4">Tu Nevera Virtual ({sortedProducts.length} productos)</h3>
+      {sortedProducts.length === 0 ? (
+        <div className="text-center py-8">
+          <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <p className="text-gray-500">No tienes productos registrados</p>
+          <p className="text-gray-400 text-sm">¡Agrega algunos para empezar!</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {sortedProducts.map(product => {
+            const daysToExpiry = getDaysToExpiry(product.expiryDate);
+            const alertColor = getAlertColor(daysToExpiry);
+
+            return (
+              <div key={product.id} className={`border-l-4 ${alertColor} bg-white border rounded-lg p-4 shadow-sm`}>
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-gray-800">{product.name}</h4>
+                      {product.source === 'ocr' && (
+                        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                          📸 OCR
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-600 capitalize">{product.category}</p>
+                    <div className="flex gap-4 text-sm text-gray-500 mt-1">
+                      <span>Cantidad: {product.quantity}</span>
+                      {product.price && <span>Valor: {product.price}€</span>}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-600">Vence: {product.expiryDate}</p>
+                    <p className={`text-sm font-bold ${daysToExpiry < 0 ? 'text-red-600' : daysToExpiry <= 1 ? 'text-orange-600' : daysToExpiry <= 3 ? 'text-yellow-600' : 'text-green-600'}`}>
+                      {daysToExpiry < 0 ? `Caducado hace ${Math.abs(daysToExpiry)} días` :
+                       daysToExpiry === 0 ? 'Vence hoy' :
+                       daysToExpiry === 1 ? 'Vence mañana' :
+                       `${daysToExpiry} días restantes`}
+                    </p>
+                  </div>
+                  <div className="ml-4 flex flex-col gap-1">
+                    <button
+                      onClick={() => markAsConsumed(product, true)}
+                      className="text-green-600 hover:text-green-800 transition-colors duration-200 p-1"
+                      title="Marcar como consumido"
+                    >
+                      <CheckCircle size={20} />
+                    </button>
+                    <button
+                      onClick={() => removeProduct(product.id)}
+                      className="text-red-600 hover:text-red-800 transition-colors duration-200 p-1"
+                      title="Eliminar"
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+export default ProductsView;
