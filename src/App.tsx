@@ -1,6 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Star, Flame, DollarSign, Crown } from 'lucide-react';
+import { supabase, onAuthStateChange } from './services/supabase';
+import { processImageWithClaude, generateAIRecipes } from './services/claudeApi';
 import NavBar from './components/NavBar';
 import DashboardView from './components/DashboardView';
 import CameraView from './components/CameraView';
@@ -10,15 +12,129 @@ import AchievementsView from './components/AchievementsView';
 import AnalyticsView from './components/AnalyticsView';
 import RecipeModal from './components/RecipeModal';
 import useStore from './store/useStore';
-import Features from './pages/Features';
-import Pricing from './pages/Pricing';
-import Testimonials from './pages/Testimonials';
-import HelpCenter from './pages/HelpCenter';
-import Contact from './pages/Contact';
-import Terms from './pages/Terms';
-import Privacy from './pages/Privacy';
+
+// Componente de autenticación simple
+const AuthForm = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage('');
+
+    try {
+      if (isLogin) {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+        setMessage('¡Inicio de sesión exitoso!');
+      } else {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+        if (error) throw error;
+        setMessage('¡Cuenta creada exitosamente! Revisa tu email para confirmar.');
+      }
+      onAuthSuccess();
+    } catch (error: any) {
+      setMessage(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">🥬 Neverafy</h1>
+          <p className="text-gray-600">Tu nevera, inteligente</p>
+        </div>
+
+        <div className="flex mb-6">
+          <button
+            onClick={() => setIsLogin(true)}
+            className={`flex-1 py-2 px-4 rounded-l-lg font-medium ${
+              isLogin ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Iniciar Sesión
+          </button>
+          <button
+            onClick={() => setIsLogin(false)}
+            className={`flex-1 py-2 px-4 rounded-r-lg font-medium ${
+              !isLogin ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'
+            }`}
+          >
+            Registrarse
+          </button>
+        </div>
+
+        <form onSubmit={handleAuth} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="tu@email.com"
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="Mínimo 6 caracteres"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
+          >
+            {loading ? 'Procesando...' : (isLogin ? 'Iniciar Sesión' : 'Crear Cuenta')}
+          </button>
+        </form>
+
+        {message && (
+          <div className={`mt-4 p-3 rounded-lg text-sm ${
+            message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+          }`}>
+            {message}
+          </div>
+        )}
+
+        <div className="mt-6 text-center text-sm text-gray-600">
+          <p>🔒 Tus datos están seguros y protegidos</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const FreshAlertPro = () => {
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  
   const {
     currentView,
     products,
@@ -55,8 +171,6 @@ const FreshAlertPro = () => {
     setIsGeneratingRecipes,
     setSelectedRecipe,
   } = useStore();
-
-  const fileInputRef = useRef(null);
 
   const enhancedRecipeDatabase = {
     'plátano': {
@@ -116,8 +230,25 @@ const FreshAlertPro = () => {
     { id: 7, name: 'Chef IA', description: 'Genera 20 recetas con IA', icon: '🤖', unlocked: false, points: 150 }
   ];
 
-  // Cargar datos al iniciar
+  // Inicializar sesión
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = onAuthStateChange((session) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Cargar datos al iniciar sesión
+  useEffect(() => {
+    if (!session) return;
+    
     const savedProducts = localStorage.getItem('freshAlertProducts');
     const savedConsumed = localStorage.getItem('freshAlertConsumed');
     const savedStats = localStorage.getItem('freshAlertStats');
@@ -131,28 +262,36 @@ const FreshAlertPro = () => {
     if (savedPremium) setIsPremium(JSON.parse(savedPremium));
 
     generateNotifications();
-  }, []);
+  }, [session]);
 
   // Guardar datos
   useEffect(() => {
-    localStorage.setItem('freshAlertProducts', JSON.stringify(products));
-  }, [products]);
+    if (session) {
+      localStorage.setItem('freshAlertProducts', JSON.stringify(products));
+    }
+  }, [products, session]);
 
   useEffect(() => {
-    localStorage.setItem('freshAlertConsumed', JSON.stringify(consumedProducts));
-  }, [consumedProducts]);
+    if (session) {
+      localStorage.setItem('freshAlertConsumed', JSON.stringify(consumedProducts));
+    }
+  }, [consumedProducts, session]);
 
   useEffect(() => {
-    localStorage.setItem('freshAlertStats', JSON.stringify(userStats));
-  }, [userStats]);
+    if (session) {
+      localStorage.setItem('freshAlertStats', JSON.stringify(userStats));
+    }
+  }, [userStats, session]);
 
   useEffect(() => {
-    localStorage.setItem('freshAlertPremium', JSON.stringify(isPremium));
-  }, [isPremium]);
+    if (session) {
+      localStorage.setItem('freshAlertPremium', JSON.stringify(isPremium));
+    }
+  }, [isPremium, session]);
 
-  // Generar notificaciones
+  // Funciones auxiliares
   const generateNotifications = () => {
-    const newNotifications = [];
+    const newNotifications: any[] = [];
     products.forEach(product => {
       const daysToExpiry = getDaysToExpiry(product.expiryDate);
       if (daysToExpiry <= 1 && daysToExpiry >= 0) {
@@ -167,22 +306,22 @@ const FreshAlertPro = () => {
     setNotifications(prev => [...prev, ...newNotifications].slice(-5));
   };
 
-  const getDaysToExpiry = (expiryDate) => {
+  const getDaysToExpiry = (expiryDate: string) => {
     const today = new Date();
     const expiry = new Date(expiryDate);
-    const diffTime = expiry - today;
+    const diffTime = expiry.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
 
-  const getAlertColor = (daysToExpiry) => {
+  const getAlertColor = (daysToExpiry: number) => {
     if (daysToExpiry < 0) return 'text-red-600 bg-red-50 border-red-200';
     if (daysToExpiry <= 1) return 'text-orange-600 bg-orange-50 border-orange-200';
     if (daysToExpiry <= 3) return 'text-yellow-600 bg-yellow-50 border-yellow-200';
     return 'text-green-600 bg-green-50 border-green-200';
   };
 
-  const addProduct = (productData = null) => {
+  const addProduct = (productData: any = null) => {
     const product = productData || {
       ...newProduct,
       id: Date.now(),
@@ -198,7 +337,6 @@ const FreshAlertPro = () => {
         setShowAddForm(false);
       }
 
-      // Aumentar puntos
       setUserStats(prev => ({
         ...prev,
         points: prev.points + 10
@@ -206,7 +344,7 @@ const FreshAlertPro = () => {
     }
   };
 
-  const markAsConsumed = (product, wasConsumed = true) => {
+  const markAsConsumed = (product: any, wasConsumed = true) => {
     const consumedProduct = {
       ...product,
       consumedDate: new Date().toISOString().split('T')[0],
@@ -228,19 +366,19 @@ const FreshAlertPro = () => {
     }
   };
 
-  const removeProduct = (id) => {
+  const removeProduct = (id: string) => {
     setProducts(products.filter(p => p.id !== id));
   };
 
-  // Funcionalidad OCR
-  const handleImageSelect = (event) => {
-    const file = event.target.files[0];
+  // Funcionalidad OCR mejorada
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
       setSelectedImage(file);
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        setImagePreview(e.target.result);
+        setImagePreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
 
@@ -248,121 +386,9 @@ const FreshAlertPro = () => {
     }
   };
 
-  const processImageWithClaude = async (imageFile) => {
-    try {
-      const base64Data = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const base64 = reader.result.split(",")[1];
-          resolve(base64);
-        };
-        reader.onerror = () => reject(new Error("Failed to read file"));
-        reader.readAsDataURL(imageFile);
-      });
-
-      const prompt = `
-Analiza esta imagen de productos alimentarios y extrae información detallada.
-
-Busca productos de comida y sus fechas de vencimiento. Formatos comunes de fechas:
-- DD/MM/YY o DD/MM/YYYY
-- "CONSUMIR ANTES DE", "FECHA LÍMITE", "BEST BEFORE"
-- "CADUCIDAD", "VENCE", "EXP"
-
-Devuelve ÚNICAMENTE un JSON válido:
-{
-  "products": [
-    {
-      "name": "nombre específico del producto",
-      "category": "frutas|verduras|lácteos|carne|pescado|pan|conservas|congelados|huevos|otros",
-      "expiryDate": "YYYY-MM-DD",
-      "confidence": 0.85,
-      "estimatedPrice": 2.50,
-      "detectedText": "texto original donde viste la fecha"
-    }
-  ],
-  "success": true,
-  "message": "Se detectaron X productos"
-}
-
-IMPORTANTE:
-- Solo incluye productos con fechas legibles
-- Convierte fechas al formato YYYY-MM-DD
-- Precios aproximados en euros
-- Confidence entre 0.70-0.95
-- NO añadas explicaciones, solo JSON puro
-`;
-
-      const response = await fetch("http://localhost:3001/api/claude", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "claude-3-haiku-20240307",
-          max_tokens: 1500,
-          messages: [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "image",
-                  source: {
-                    type: "base64",
-                    media_type: imageFile.type,
-                    data: base64Data,
-                  }
-                },
-                {
-                  type: "text",
-                  text: prompt
-                }
-              ]
-            }
-          ]
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-
-      const data = await response.json();
-      let responseText = data.content[0].text;
-      responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-
-      try {
-        return JSON.parse(responseText);
-      } catch (parseError) {
-        // Fallback a datos mock
-        return {
-          products: [
-            {
-              name: "Producto detectado",
-              category: "otros",
-              expiryDate: "2025-07-25",
-              confidence: 0.75,
-              estimatedPrice: 2.0,
-              detectedText: "Fecha detectada en imagen"
-            }
-          ],
-          success: true,
-          message: "Producto detectado (modo demo)"
-        };
-      }
-
-    } catch (error) {
-      return {
-        products: [],
-        success: false,
-        message: "Error procesando la imagen. Intenta de nuevo."
-      };
-    }
-  };
-
   const processImage = async () => {
     if (!selectedImage) return;
 
-    // Verificar límites freemium
     if (!isPremium && userStats.ocrUsed >= 3) {
       alert('🔒 Has alcanzado el límite de 3 análisis mensuales. ¡Actualiza a Premium para análisis ilimitados!');
       return;
@@ -371,12 +397,9 @@ IMPORTANTE:
     setIsProcessingOCR(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
       const results = await processImageWithClaude(selectedImage);
-
       setOcrResults(results);
 
-      // Actualizar estadísticas
       setUserStats(prev => ({
         ...prev,
         ocrUsed: prev.ocrUsed + 1,
@@ -394,7 +417,7 @@ IMPORTANTE:
     }
   };
 
-  const addDetectedProductToFridge = (detectedProduct) => {
+  const addDetectedProductToFridge = (detectedProduct: any) => {
     const product = {
       ...detectedProduct,
       id: Date.now() + Math.random(),
@@ -407,9 +430,8 @@ IMPORTANTE:
     alert(`✅ ${product.name} añadido a tu nevera virtual!`);
   };
 
-  // Motor de recetas con IA
-  const generateAIRecipes = async (urgentProducts) => {
-    // Verificar límites freemium
+  // Motor de recetas con IA mejorado
+  const generateAIRecipesHandler = async (urgentProducts: any[]) => {
     if (!isPremium && userStats.recipesGenerated >= 5) {
       alert('🔒 Has alcanzado el límite de 5 recetas mensuales. ¡Actualiza a Premium para recetas ilimitadas!');
       return [];
@@ -418,79 +440,18 @@ IMPORTANTE:
     setIsGeneratingRecipes(true);
 
     try {
-      const productsList = urgentProducts.map(p => `${p.name} (vence en ${getDaysToExpiry(p.expiryDate)} días)`).join(', ');
-
-      const prompt = `
-Tengo estos productos que vencen pronto: ${productsList}
-
-Genera 3 recetas creativas que usen AL MENOS 2 de estos ingredientes.
-
-Responde ÚNICAMENTE con JSON válido:
-{
-  "recipes": [
-    {
-      "name": "Nombre de la receta",
-      "description": "Descripción breve y apetitosa",
-      "ingredients": ["ingrediente1", "ingrediente2"],
-      "prepTime": "15 minutos",
-      "difficulty": "Fácil|Medio|Difícil",
-      "steps": ["paso 1", "paso 2", "paso 3"],
-      "tips": "Consejo útil para la receta",
-      "nutrition": "Información nutricional básica"
-    }
-  ],
-  "success": true
-}
-
-Las recetas deben ser:
-- Prácticas y rápidas (max 45 min)
-- Con ingredientes comunes españoles
-- Adaptadas para evitar desperdicio
-- Creativas pero realistas
-`;
-
-      const response = await fetch("http://localhost:3001/api/claude", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "claude-3-haiku-20240307",
-          max_tokens: 2000,
-          messages: [
-            { role: "user", content: prompt }
-          ]
-        })
-      });
-
-      if (!response.ok) throw new Error('API Error');
-
-      const data = await response.json();
-      let responseText = data.content[0].text;
-      responseText = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-
-      const parsedResponse = JSON.parse(responseText);
-
+      const recipes = await generateAIRecipes(urgentProducts);
+      
       setUserStats(prev => ({
         ...prev,
         recipesGenerated: prev.recipesGenerated + 1,
         points: prev.points + 20
       }));
 
-      return parsedResponse.recipes || [];
-
+      return recipes;
     } catch (error) {
-      // Fallback a recetas básicas
-      return urgentProducts.slice(0, 3).map((product, index) => ({
-        name: `Receta con ${product.name}`,
-        description: `Deliciosa receta para aprovechar ${product.name} antes de que venza`,
-        ingredients: [product.name, "Ingredientes básicos"],
-        prepTime: "20 minutos",
-        difficulty: "Fácil",
-        steps: ["Preparar ingredientes", "Cocinar según instrucciones", "Servir caliente"],
-        tips: `Ideal para consumir ${product.name} que vence pronto`,
-        nutrition: "Rica en nutrientes"
-      }));
+      console.error('Error generating recipes:', error);
+      return [];
     } finally {
       setIsGeneratingRecipes(false);
     }
@@ -512,13 +473,13 @@ Las recetas deben ser:
   // Sugerir recetas básicas
   const getSuggestedRecipes = () => {
     const urgentProducts = products.filter(p => getDaysToExpiry(p.expiryDate) <= 3);
-    const suggestions = [];
+    const suggestions: any[] = [];
 
     urgentProducts.forEach(product => {
       const productName = product.name.toLowerCase();
       Object.keys(enhancedRecipeDatabase).forEach(ingredient => {
         if (productName.includes(ingredient)) {
-          const recipeData = enhancedRecipeDatabase[ingredient];
+          const recipeData = enhancedRecipeDatabase[ingredient as keyof typeof enhancedRecipeDatabase];
           const isUrgent = getDaysToExpiry(product.expiryDate) <= 1;
           const recipesToUse = isUrgent ? recipeData.urgency : recipeData.recipes;
 
@@ -548,6 +509,25 @@ Las recetas deben ser:
     totalConsumed: consumedProducts.filter(p => p.wasConsumed).length,
     totalWasted: consumedProducts.filter(p => !p.wasConsumed).length
   };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🥬</div>
+          <div className="text-xl font-bold text-gray-800">Cargando Neverafy...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <AuthForm onAuthSuccess={() => {}} />;
+  }
 
   return (
     <Router>
@@ -589,6 +569,7 @@ Las recetas deben ser:
             setCurrentView={setCurrentView}
             isPremium={isPremium}
             userStats={userStats}
+            onLogout={handleLogout}
           />
 
           {/* Content based on current view */}
@@ -626,14 +607,13 @@ Las recetas deben ser:
               addDetectedProductToFridge={addDetectedProductToFridge}
               getAlertColor={getAlertColor}
               getDaysToExpiry={getDaysToExpiry}
-              fileInputRef={fileInputRef}
             />} />
             <Route path="/recipes" element={<RecipesView
               isPremium={isPremium}
               userStats={userStats}
               products={products}
               getDaysToExpiry={getDaysToExpiry}
-              generateAIRecipes={generateAIRecipes}
+              generateAIRecipes={generateAIRecipesHandler}
               isGeneratingRecipes={isGeneratingRecipes}
               generatedRecipes={generatedRecipes}
               setSelectedRecipe={setSelectedRecipe}
@@ -641,13 +621,6 @@ Las recetas deben ser:
             />} />
             <Route path="/achievements" element={<AchievementsView achievements={achievements} products={products} userStats={userStats} />} />
             <Route path="/analytics" element={<AnalyticsView stats={stats} userStats={userStats} isPremium={isPremium} setIsPremium={setIsPremium} />} />
-            <Route path="/features" element={<Features />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/testimonials" element={<Testimonials />} />
-            <Route path="/help" element={<HelpCenter />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
           </Routes>
 
           {/* Recipe Modal */}
