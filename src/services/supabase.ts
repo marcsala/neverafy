@@ -1,8 +1,8 @@
 // src/services/supabase.ts
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || process.env.REACT_APP_SUPABASE_URL!
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.REACT_APP_SUPABASE_ANON_KEY!
+const supabaseUrl = 'https://tbactydpgltluljssvym.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRiYWN0eWRwZ2x0bHVsanNzdnltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTQ0NDksImV4cCI6MjA2ODUzMDQ0OX0.q7VssmjbSLSiOXDZaXjVPrzrGCW1C8JIWQk0LZ8su7k'
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
 

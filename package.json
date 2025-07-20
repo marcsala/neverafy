@@ -1,6 +1,7 @@
 {
   "name": "neverafy",
   "version": "1.0.0",
+  "type": "module",
   "description": "Tu nevera, inteligente - Nunca más desperdicies comida",
   "main": "index.js",
   "scripts": {
@@ -21,6 +22,9 @@
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
     "vite": "^4.5.14"
   },

@@ -2071,10 +2071,13 @@
             button.style.background = '#16a34a';
 
             setTimeout(() => {
-                alert('¡Cuenta creada exitosamente! Te redirigimos a tu nevera inteligente...');
-                button.innerHTML = originalContent;
-                button.style.background = '';
-                event.target.reset();
+                // Guardar datos del usuario
+                localStorage.setItem('userName', data.name);
+                localStorage.setItem('userEmail', data.email);
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                // Redirigir a la app con el nombre del usuario
+                window.location.href = `pages/app.html?name=${encodeURIComponent(data.name)}`;
             }, 2000);
         }
 

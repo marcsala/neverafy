@@ -1,0 +1,90 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+/* Variables CSS */
+:root {
+  --primary-green: #16a34a;
+  --primary-blue: #2563eb;
+}
+
+/* Utilidades básicas tipo Tailwind */
+.min-h-screen { min-height: 100vh; }
+.bg-gradient-to-br { background: linear-gradient(to bottom right, var(--gradient-from), var(--gradient-to)); }
+.from-green-50 { --gradient-from: #f0fdf4; }
+.to-blue-50 { --gradient-to: #eff6ff; }
+.p-4 { padding: 1rem; }
+.max-w-6xl { max-width: 72rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.text-center { text-align: center; }
+.mb-8 { margin-bottom: 2rem; }
+.text-4xl { font-size: 2.25rem; }
+.font-bold { font-weight: 700; }
+.text-gray-800 { color: #1f2937; }
+.mb-2 { margin-bottom: 0.5rem; }
+.text-gray-600 { color: #4b5563; }
+.mt-2 { margin-top: 0.5rem; }
+.inline-flex { display: inline-flex; }
+.items-center { align-items: center; }
+.gap-2 { gap: 0.5rem; }
+.bg-gradient-to-r { background: linear-gradient(to right, var(--gradient-from), var(--gradient-to)); }
+.from-green-100 { --gradient-from: #dcfce7; }
+.to-blue-100 { --gradient-to: #dbeafe; }
+.text-gray-700 { color: #374151; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.rounded-full { border-radius: 9999px; }
+.text-sm { font-size: 0.875rem; }
+.text-red-600 { color: #dc2626; }
+.font-medium { font-weight: 500; }
+.mt-4 { margin-top: 1rem; }
+.flex { display: flex; }
+.justify-center { justify-content: center; }
+.gap-4 { gap: 1rem; }
+.flex-wrap { flex-wrap: wrap; }
+.bg-white { background-color: white; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+.w-5 { width: 1.25rem; }
+.h-5 { height: 1.25rem; }
+.text-yellow-500 { color: #eab308; }
+.text-orange-500 { color: #f97316; }
+.text-green-500 { color: #22c55e; }
+.from-purple-500 { --gradient-from: #a855f7; }
+.to-blue-500 { --gradient-to: #3b82f6; }
+.text-white { color: white; }
+
+/* Componentes específicos */
+.premium-button {
+  background: white;
+  color: var(--primary-green);
+  font-weight: bold;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.premium-button:hover {
+  background-color: #f3f4f6;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

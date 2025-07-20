@@ -1,3 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-green: #16a34a;
+  --primary-blue: #2563eb;
+}
+
 .premium-button {
   background: white;
   color: var(--primary-green);
@@ -26,6 +35,17 @@
   animation: spin 3s linear infinite;
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Otros estilos personalizados */
 .author-avatar-carlos {
   background: linear-gradient(45deg, #3b82f6, #2563eb);
 }
@@ -46,63 +66,4 @@
 
 .form-checkbox-label a:hover {
   text-decoration: underline;
-}
-
-.security-note-icon {
-  font-size: 18px;
-  color: #16a34a;
-}
-
-.faq-question-arrow {
-  font-size: 24px;
-  color: #6b7280;
-}
-
-.footer-contact-icon {
-  font-size: 18px;
-}
-
-.footer-availability-icon {
-  font-size: 16px;
-}
-
-.modal-title-icon {
-  font-size: 32px;
-}
-
-.cta-btn-primary-icon {
-  font-size: 24px;
-}
-
-.hero-badge {
-  color: #16a34a;
-}
-
-.hero-badge-span {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  background: #16a34a;
-  border-radius: 50%;
-  position: relative;
-}
-
-.hero-badge-span-pulse {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #16a34a;
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-
-.stat-number-blue {
-  color: var(--primary-blue);
-}
-
-.nav-btn-primary {
-  padding: 12px 24px;
-  font-size: 14px;
 }
