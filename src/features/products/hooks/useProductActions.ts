@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { getDaysToExpiry, getCurrentDate } from '../../shared/utils/dateUtils';
-import { POINTS, DEFAULT_PRODUCT_PRICE, CO2_SAVED_PER_PRODUCT } from '../../shared/utils/constants';
+import { getDaysToExpiry, getCurrentDate } from '@shared/utils/dateUtils';
+import { POINTS, DEFAULT_PRODUCT_PRICE, CO2_SAVED_PER_PRODUCT } from '@shared/utils/constants';
 
 interface Product {
   id: string | number;

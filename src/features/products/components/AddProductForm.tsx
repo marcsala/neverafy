@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Package, Calendar, Euro, Hash } from 'lucide-react';
-import { CATEGORIES } from '../../../shared/utils/constants';
-import { formatCategory, capitalize } from '../../../shared/utils/formatters';
-import { getCurrentDate } from '../../../shared/utils/dateUtils';
-import { Button } from '../../../shared/components/ui';
+import { PRODUCT_CATEGORIES as CATEGORIES } from '@shared/utils/constants';
+import { formatCategory, capitalize } from '@shared/utils/formatters';
+import { getCurrentDate } from '@shared/utils/dateUtils';
+import { Button } from '@shared/components/ui';
 
 interface NewProduct {
   name: string;

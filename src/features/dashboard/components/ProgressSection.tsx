@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Flame, Leaf, Camera, ChefHat } from 'lucide-react';
-import { formatWeight, formatLevel } from '../../../shared/utils/formatters';
-import { LEVEL_THRESHOLDS, FREEMIUM_LIMITS } from '../../../shared/utils/constants';
+import { formatWeight, formatLevel } from '@shared/utils/formatters';
+import { LEVEL_THRESHOLDS, FREEMIUM_LIMITS } from '@shared/utils/constants';
 
 interface ProgressSectionProps {
   userStats: {

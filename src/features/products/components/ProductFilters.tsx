@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Search, Filter, X, SortAsc, SortDesc } from 'lucide-react';
-import { CATEGORIES } from '../../../shared/utils/constants';
-import { formatCategory } from '../../../shared/utils/formatters';
+import { PRODUCT_CATEGORIES as CATEGORIES } from '@shared/utils/constants';
+import { formatCategory } from '@shared/utils/formatters';
 
 interface ProductFiltersProps {
   searchTerm: string;

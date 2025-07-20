@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Sparkles, BookOpen, Grid, List, Filter } from 'lucide-react';
 import RecipeGenerator from './RecipeGenerator';
-import QuickRecipes from './QuickRecipes';
 import RecipeCard from './RecipeCard';
 import RecipeModal from './RecipeModal';
 import { Button } from '../../../shared/components/ui';
@@ -224,13 +223,6 @@ const RecipesView: React.FC<RecipesViewProps> = ({
           )}
         </div>
       )}
-
-      {/* Sugerencias rápidas */}
-      <QuickRecipes
-        products={products}
-        onSelectRecipe={setSelectedRecipe}
-        maxRecipes={6}
-      />
 
       {/* Modal de receta */}
       <RecipeModal

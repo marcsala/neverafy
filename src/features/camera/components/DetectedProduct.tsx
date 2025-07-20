@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { Plus, Package, Calendar, DollarSign, Eye, Edit3, Check, X } from 'lucide-react';
-import { getDaysToExpiry, getAlertColor, getExpiryStatusText, formatExpiryDate } from '../../../shared/utils/dateUtils';
-import { formatPrice, formatConfidence, formatCategory } from '../../../shared/utils/formatters';
-import { Button } from '../../../shared/components/ui';
+import { getDaysToExpiry, getAlertColor, formatDate as formatExpiryDate } from '@shared/utils/dateUtils';
+import { formatPrice, formatConfidence, formatCategory } from '@shared/utils/formatters';
+import { Button } from '@shared/components/ui';
 
 interface DetectedProductData {
   name: string;
@@ -44,6 +44,14 @@ const DetectedProduct: React.FC<DetectedProductProps> = ({
 
   const daysToExpiry = getDaysToExpiry(product.expiryDate);
   const alertColor = getAlertColor(daysToExpiry);
+
+  const getExpiryStatusText = (days: number) => {
+    if (days < 0) return `Vencido hace ${Math.abs(days)} día(s)`;
+    if (days === 0) return 'Vence hoy';
+    if (days === 1) return 'Vence mañana';
+    return `Vence en ${days} días`;
+  };
+
   const expiryStatus = getExpiryStatusText(daysToExpiry);
 
   const getUrgencyIcon = () => {

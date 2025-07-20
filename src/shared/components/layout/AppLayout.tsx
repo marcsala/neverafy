@@ -2,7 +2,7 @@ import React from 'react';
 import AppHeader from './AppHeader';
 import AppFooter from './AppFooter';
 import AppRoutes from './AppRoutes';
-import { NavBar } from './NavBar';
+import NavBar from './NavBar';
 
 interface AppLayoutProps {
   // Data

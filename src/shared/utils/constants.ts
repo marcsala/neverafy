@@ -75,6 +75,17 @@ export const POINTS = {
   COOK_RECIPE: 30
 };
 
+// Umbrales de nivel
+export const LEVEL_THRESHOLDS = [0, 100, 250, 500, 1000, 2000, 5000, 10000];
+
+// Tipos de notificaciones
+export const NOTIFICATION_TYPES = {
+  EXPIRY_WARNING: 'EXPIRY_WARNING',
+  ACHIEVEMENT: 'ACHIEVEMENT',
+  PREMIUM: 'PREMIUM',
+  GENERAL: 'GENERAL'
+};
+
 // Valores por defecto
 export const DEFAULT_PRODUCT_PRICE = 3;
 export const CO2_SAVED_PER_PRODUCT = 0.5;

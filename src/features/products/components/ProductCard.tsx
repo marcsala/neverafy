@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { CheckCircle, Trash2, Clock, Package2, Euro } from 'lucide-react';
-import { getDaysToExpiry, getAlertColor, getExpiryStatusText, formatExpiryDate } from '../../../shared/utils/dateUtils';
-import { formatPrice, formatCategory } from '../../../shared/utils/formatters';
+import { getDaysToExpiry, getAlertColor, formatDate as formatExpiryDate } from '@shared/utils/dateUtils';
+import { formatPrice, formatCategory } from '@shared/utils/formatters';
 
 interface Product {
   id: string;
@@ -34,6 +34,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const daysToExpiry = getDaysToExpiry(product.expiryDate);
   const alertColor = getAlertColor(daysToExpiry);
+
+  const getExpiryStatusText = (days: number) => {
+    if (days < 0) return `Vencido hace ${Math.abs(days)} día(s)`;
+    if (days === 0) return 'Vence hoy';
+    if (days === 1) return 'Vence mañana';
+    return `Vence en ${days} días`;
+  };
+
   const expiryStatus = getExpiryStatusText(daysToExpiry);
 
   const handleMarkAsConsumed = () => {

@@ -5,4 +5,3 @@ export { default as RecipesView } from './RecipesView';
 export { default as RecipeCard } from './RecipeCard';
 export { default as RecipeModal } from './RecipeModal';
 export { default as RecipeGenerator } from './RecipeGenerator';
-export { default as QuickRecipes } from './QuickRecipes';
