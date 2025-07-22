@@ -1,21 +1,6 @@
 {
-  "framework": "vite",
-  "routes": [
-    {
-      "src": "/roadmap",
-      "dest": "/pages/roadmap.html"
-    },
-    {
-      "src": "/privacy",
-      "dest": "/pages/privacy.html"
-    },
-    {
-      "src": "/terms",
-      "dest": "/pages/terms.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install"
 }
