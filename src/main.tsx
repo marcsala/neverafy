@@ -1,64 +1,96 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './index.css'
 
-// Componente ultra simple
-const TestApp = () => {
+// Importamos la LandingPage que habíamos creado
+import { LandingPage } from './features/landing'
+
+// Páginas simples de auth
+const SimpleLoginPage: React.FC = () => {
   return (
-    <div style={{
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #f0fdf4, #dbeafe)',
-      fontFamily: 'system-ui, sans-serif'
-    }}>
-      <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🥬</div>
-      <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '1rem', color: '#1f2937' }}>
-        Neverafy
-      </h1>
-      <p style={{ fontSize: '1.5rem', color: '#6b7280', marginBottom: '2rem' }}>
-        Tu nevera, inteligente - 250€ ahorrados al año
-      </p>
-      <div style={{ display: 'flex', gap: '1rem' }}>
-        <a 
-          href="/login" 
-          style={{
-            backgroundColor: '#2563eb',
-            color: 'white',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            fontWeight: '600'
-          }}
-        >
-          Iniciar Sesión
-        </a>
-        <a 
-          href="/register" 
-          style={{
-            backgroundColor: '#16a34a',
-            color: 'white',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            fontWeight: '600'
-          }}
-        >
-          Empezar Gratis
-        </a>
-      </div>
-      <div style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#9ca3af' }}>
-        <a href="/roadmap" style={{ margin: '0 1rem', color: '#6b7280' }}>Roadmap</a>
-        <a href="/privacy" style={{ margin: '0 1rem', color: '#6b7280' }}>Privacidad</a>
-        <a href="/terms" style={{ margin: '0 1rem', color: '#6b7280' }}>Términos</a>
-      </div>
-      <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#9ca3af' }}>
-        Test version - Si ves esto, React funciona correctamente
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+        <div className="text-center mb-6">
+          <div className="text-4xl mb-2">🥬</div>
+          <h2 className="text-2xl font-bold">Iniciar Sesión</h2>
+        </div>
+        <form className="space-y-4">
+          <input 
+            type="email" 
+            placeholder="Email" 
+            className="w-full p-3 border rounded-lg"
+          />
+          <input 
+            type="password" 
+            placeholder="Contraseña" 
+            className="w-full p-3 border rounded-lg"
+          />
+          <button 
+            type="submit"
+            className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700"
+          >
+            Entrar
+          </button>
+        </form>
+        <div className="text-center mt-4">
+          <a href="/" className="text-blue-600 hover:underline">← Volver a inicio</a>
+        </div>
       </div>
     </div>
+  );
+};
+
+const SimpleRegisterPage: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+        <div className="text-center mb-6">
+          <div className="text-4xl mb-2">🥬</div>
+          <h2 className="text-2xl font-bold">Crear Cuenta</h2>
+        </div>
+        <form className="space-y-4">
+          <input 
+            type="text" 
+            placeholder="Nombre" 
+            className="w-full p-3 border rounded-lg"
+          />
+          <input 
+            type="email" 
+            placeholder="Email" 
+            className="w-full p-3 border rounded-lg"
+          />
+          <input 
+            type="password" 
+            placeholder="Contraseña" 
+            className="w-full p-3 border rounded-lg"
+          />
+          <button 
+            type="submit"
+            className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700"
+          >
+            Crear Cuenta
+          </button>
+        </form>
+        <div className="text-center mt-4">
+          <a href="/" className="text-blue-600 hover:underline">← Volver a inicio</a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<SimpleLoginPage />} />
+        <Route path="/register" element={<SimpleRegisterPage />} />
+        <Route path="*" element={<LandingPage />} />
+      </Routes>
+    </Router>
   )
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<TestApp />)
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />)
