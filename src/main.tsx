@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './index.css'
 
-// Importamos la LandingPage que habíamos creado
-import { LandingPage } from './features/landing'
+// Landing page autocontenida
+import LandingPageComplete from './LandingPageComplete'
 
 // Páginas simples de auth
 const SimpleLoginPage: React.FC = () => {
@@ -19,16 +19,16 @@ const SimpleLoginPage: React.FC = () => {
           <input 
             type="email" 
             placeholder="Email" 
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
           />
           <input 
             type="password" 
             placeholder="Contraseña" 
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
           />
           <button 
             type="submit"
-            className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700"
+            className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors"
           >
             Entrar
           </button>
@@ -53,21 +53,21 @@ const SimpleRegisterPage: React.FC = () => {
           <input 
             type="text" 
             placeholder="Nombre" 
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
           />
           <input 
             type="email" 
             placeholder="Email" 
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
           />
           <input 
             type="password" 
             placeholder="Contraseña" 
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
           />
           <button 
             type="submit"
-            className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700"
+            className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors"
           >
             Crear Cuenta
           </button>
@@ -84,10 +84,10 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<LandingPageComplete />} />
         <Route path="/login" element={<SimpleLoginPage />} />
         <Route path="/register" element={<SimpleRegisterPage />} />
-        <Route path="*" element={<LandingPage />} />
+        <Route path="*" element={<LandingPageComplete />} />
       </Routes>
     </Router>
   )
