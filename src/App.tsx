@@ -41,14 +41,16 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {/* Rutas públicas */}
+        {/* Ruta de landing page */}
         <Route path="/" element={<LandingPage />} />
+        
+        {/* Rutas de autenticación */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         
         {/* Rutas protegidas - solo si hay sesión */}
         <Route 
-          path="/*" 
+          path="/app/*" 
           element={
             session ? (
               <AppLayout
@@ -71,6 +73,9 @@ const App: React.FC = () => {
             )
           } 
         />
+        
+        {/* Redirección para rutas no encontradas */}
+        <Route path="*" element={<LandingPage />} />
       </Routes>
     </Router>
   );
