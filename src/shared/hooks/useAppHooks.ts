@@ -1,15 +1,18 @@
 import { useEffect } from 'react';
 
 // Hooks compartidos
-import { useAuth, useLocalStorage, useNotifications, useAppLogic } from './index';
+import { useAuth } from './useAuth';
+import { useLocalStorage } from './useLocalStorage';
+import { useNotifications } from './useNotifications';
+import { useAppLogic } from './useAppLogic';
 
 // Hooks de features
-import { useProductActions } from '../../features/products';
-import { useOCRLogic } from '../../features/camera';
-import { useRecipeGeneration } from '../../features/recipes';
+import { useProductActions } from '@/features/products';
+import { useOCRLogic } from '@/features/camera';
+import { useRecipeGeneration } from '@/features/recipes';
 
 // Store
-import useStore from '../../store/useStore';
+import useStore from '@/store/useStore';
 
 export const useAppHooks = () => {
   // Auth hook
@@ -62,6 +65,9 @@ export const useAppHooks = () => {
     setConsumedProducts,
     setUserStats
   });
+  
+  console.log('📈 DEBUG useAppHooks: Current products from store:', products);
+  console.log('📈 DEBUG useAppHooks: Products length:', products?.length || 0);
 
   // Hook para lógica OCR
   const ocrLogic = useOCRLogic({

@@ -1,8 +1,11 @@
 // Categorías de productos
-export const PRODUCT_CATEGORIES = [
+export const CATEGORIES = [
   'frutas', 'verduras', 'lácteos', 'carne', 'pescado',
   'pan', 'conservas', 'congelados', 'huevos', 'otros'
 ];
+
+// Alias para compatibilidad
+export const PRODUCT_CATEGORIES = CATEGORIES;
 
 // Base de datos de recetas mejorada
 export const ENHANCED_RECIPE_DATABASE = {
@@ -73,6 +76,31 @@ export const POINTS = {
   CONSUME_PRODUCT_ON_TIME: 25,
   CONSUME_PRODUCT_EXPIRED: 10,
   COOK_RECIPE: 30
+};
+
+// Umbrales de nivel
+export const LEVEL_THRESHOLDS = {
+  1: 0,
+  2: 100,
+  3: 250,
+  4: 500,
+  5: 1000,
+  6: 2000,
+  7: 3500,
+  8: 5000,
+  9: 7500,
+  10: 10000
+};
+
+// Tipos de notificaciones
+export const NOTIFICATION_TYPES = {
+  EXPIRY_WARNING: 'expiry_warning',
+  ACHIEVEMENT: 'achievement',
+  PREMIUM: 'premium',
+  SUCCESS: 'success',
+  INFO: 'info',
+  WARNING: 'warning',
+  ERROR: 'error'
 };
 
 // Valores por defecto

@@ -7,6 +7,20 @@
   --primary-blue: #2563eb;
 }
 
+/* Utilidades personalizadas */
+.h-160 {
+  height: 40rem;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 .premium-button {
   background: white;
   color: var(--primary-green);
@@ -43,6 +57,15 @@
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
 /* Otros estilos personalizados */

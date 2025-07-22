@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { CheckCircle, Trash2, Clock, Package2, Euro } from 'lucide-react';
-import { getDaysToExpiry, getAlertColor, getExpiryStatusText, formatExpiryDate } from '../../../shared/utils/dateUtils';
-import { formatPrice, formatCategory } from '../../../shared/utils/formatters';
+import { getDaysToExpiry, getAlertColor, getExpiryStatusText, formatExpiryDate } from '@/shared/utils/dateUtils';
+import { formatPrice, formatCategory } from '@/shared/utils/formatters';
 
 interface Product {
   id: string;
@@ -34,7 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const daysToExpiry = getDaysToExpiry(product.expiryDate);
   const alertColor = getAlertColor(daysToExpiry);
-  const expiryStatus = getExpiryStatusText(daysToExpiry);
+  const expiryStatus = getExpiryStatusText(product.expiryDate);
 
   const handleMarkAsConsumed = () => {
     onMarkAsConsumed(product, true);
@@ -126,7 +126,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <span>Cantidad: {product.quantity}</span>
             </div>
             
-            {product.price && (
+            {product.price !== undefined && product.price > 0 && (
               <div className="flex items-center gap-2 text-gray-600">
                 <Euro className="w-4 h-4" />
                 <span>Valor: {formatPrice(product.price)}</span>

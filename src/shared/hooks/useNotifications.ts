@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { getDaysToExpiry } from '../utils/dateUtils';
+import { getDaysToExpiry } from '@/shared/utils/dateUtils';
 
 interface UseNotificationsProps {
   products: any[];

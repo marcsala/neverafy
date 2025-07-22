@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { getDaysToExpiry, getCurrentDate } from '../../shared/utils/dateUtils';
-import { POINTS, DEFAULT_PRODUCT_PRICE, CO2_SAVED_PER_PRODUCT } from '../../shared/utils/constants';
+import { getDaysToExpiry, getCurrentDate } from '@/shared/utils/dateUtils';
+import { POINTS, DEFAULT_PRODUCT_PRICE, CO2_SAVED_PER_PRODUCT } from '@/shared/utils/constants';
 
 interface Product {
   id: string | number;
@@ -27,10 +27,12 @@ export const useProductActions = ({
 }: UseProductActionsProps) => {
 
   const addProduct = useCallback((productData: Partial<Product>) => {
+    console.log('🎯 DEBUG useProductActions: addProduct called with:', productData);
+    
     const product: Product = {
       id: Date.now() + Math.random(),
       addedDate: getCurrentDate(),
-      price: parseFloat(String(productData.price)) || undefined,
+      price: parseFloat(String(productData.price)) || 0,
       source: 'manual',
       quantity: 1,
       ...productData,
@@ -38,19 +40,30 @@ export const useProductActions = ({
       category: productData.category || 'otros',
       expiryDate: productData.expiryDate || ''
     };
+    
+    console.log('🎯 DEBUG useProductActions: Created product object:', product);
 
     if (product.name && product.expiryDate) {
-      setProducts(prev => [...prev, product]);
+      console.log('🎯 DEBUG useProductActions: Product is valid, adding to list');
+      setProducts(prev => {
+        const newProducts = [...prev, product];
+        console.log('🎯 DEBUG useProductActions: Previous products:', prev);
+        console.log('🎯 DEBUG useProductActions: Updated products list:', newProducts);
+        console.log('🎯 DEBUG useProductActions: New products length:', newProducts.length);
+        return newProducts;
+      });
 
       // Actualizar puntos
       setUserStats(prev => ({
         ...prev,
         points: prev.points + POINTS.ADD_PRODUCT
       }));
-
+      
+      console.log('🎯 DEBUG useProductActions: Product added successfully!');
       return product;
     }
-
+    
+    console.log('🚨 DEBUG useProductActions: Product is invalid - missing name or expiryDate');
     return null;
   }, [setProducts, setUserStats]);
 

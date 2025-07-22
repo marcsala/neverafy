@@ -1,16 +1,16 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Features components
-import { DashboardView } from '../../features/dashboard/components';
-import { CameraView } from '../../features/camera/components';
-import { ProductsView } from '../../features/products/components';
-import { RecipesView } from '../../features/recipes/components';
-import { AchievementsView } from '../../features/achievements';
-import { AnalyticsView } from '../../features/analytics';
+import { DashboardView } from '@/features/dashboard/components';
+import { CameraView } from '@/features/camera/components';
+import { ProductsView } from '@/features/products/components';
+import { RecipesView } from '@/features/recipes/components';
+import { AchievementsView } from '@/features/achievements';
+import { AnalyticsView } from '@/features/analytics';
 
 // Constants
-import { ACHIEVEMENTS } from '../utils/constants';
+import { ACHIEVEMENTS } from '@/shared/utils/constants';
 
 interface AppRoutesProps {
   // Data
@@ -65,7 +65,10 @@ const AppRoutes: React.FC<AppRoutesProps> = ({
 }) => {
   return (
     <Routes>
-      <Route path="/" element={<DashboardView 
+      {/* Redirigir a dashboard por defecto */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      
+      <Route path="/dashboard" element={<DashboardView 
         stats={stats} 
         userStats={userStats} 
         notifications={notifications} 

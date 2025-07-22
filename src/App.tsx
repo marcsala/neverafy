@@ -1,15 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Hooks
-import { useAppHooks, useAppHandlers } from './shared/hooks';
+import { useAppHooks, useAppHandlers } from '@/shared/hooks';
 
 // Components
-import { LoadingScreen } from './shared/components/ui';
-import { AppLayout } from './shared/components/layout';
-import { AuthForm } from './features/auth';
+import { LoadingScreen } from '@/shared/components/ui';
+import { AppLayout } from '@/shared/components/layout';
+import { LandingPage } from '@/features/landing';
+import { LoginPage, RegisterPage } from '@/features/auth';
 
-const FreshAlertPro: React.FC = () => {
+const App: React.FC = () => {
   // Consolidar todos los hooks de la app
   const {
     session,
@@ -34,29 +35,45 @@ const FreshAlertPro: React.FC = () => {
     setIsPremium
   });
 
-  // Estados de carga y autenticación
+  // Estados de carga
   if (loading) return <LoadingScreen />;
-  if (!session) return <AuthForm onAuthSuccess={() => {}} />;
 
   return (
     <Router>
-      <AppLayout
-        userStats={userStats}
-        isPremium={isPremium}
-        currentView={currentView}
-        stats={stats}
-        notifications={notifications}
-        products={products}
-        setCurrentView={setCurrentView}
-        setIsPremium={setIsPremium}
-        handleLogout={handleLogout}
-        productActions={productActions}
-        ocrLogic={ocrLogic}
-        recipeLogic={recipeLogic}
-        handleUpgradeToPremium={handleUpgradeToPremium}
-      />
+      <Routes>
+        {/* Rutas públicas */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        
+        {/* Rutas protegidas - solo si hay sesión */}
+        <Route 
+          path="/*" 
+          element={
+            session ? (
+              <AppLayout
+                userStats={userStats}
+                isPremium={isPremium}
+                currentView={currentView}
+                stats={stats}
+                notifications={notifications}
+                products={products}
+                setCurrentView={setCurrentView}
+                setIsPremium={setIsPremium}
+                handleLogout={handleLogout}
+                productActions={productActions}
+                ocrLogic={ocrLogic}
+                recipeLogic={recipeLogic}
+                handleUpgradeToPremium={handleUpgradeToPremium}
+              />
+            ) : (
+              <LoginPage />
+            )
+          } 
+        />
+      </Routes>
     </Router>
   );
 };
 
-export default FreshAlertPro;
+export default App;

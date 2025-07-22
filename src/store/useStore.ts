@@ -39,7 +39,7 @@ interface StoreState {
 
   // Actions
   setCurrentView: (view: string) => void;
-  setProducts: (products: any[]) => void;
+  setProducts: (products: any[] | ((prev: any[]) => any[])) => void;
   setConsumedProducts: (consumedProducts: any[]) => void;
   setUserStats: (stats: UserStats | ((prev: UserStats) => UserStats)) => void;
   setNewProduct: (product: NewProduct) => void;
@@ -91,7 +91,9 @@ const useStore = create<StoreState>((set) => ({
   selectedRecipe: null,
 
   setCurrentView: (view) => set({ currentView: view }),
-  setProducts: (products) => set({ products: Array.isArray(products) ? products : [] }),
+  setProducts: (products) => set((state) => ({ 
+    products: typeof products === 'function' ? products(state.products) : (Array.isArray(products) ? products : []) 
+  })),
   setConsumedProducts: (consumedProducts) => set({ consumedProducts: consumedProducts }),
   setUserStats: (stats) => set((state) => ({ 
     userStats: typeof stats === 'function' ? stats(state.userStats) : stats 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase, onAuthStateChange } from '../../services/supabase';
+import { supabase, onAuthStateChange } from '@/services/supabase';
 
 interface UseAuthReturn {
   session: any;

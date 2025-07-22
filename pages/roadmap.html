@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadmap - Neverafy</title>
+    <meta name="description" content="Descubre las próximas funcionalidades que llegarán a Neverafy. Tu feedback nos ayuda a priorizarlas.">
+    <link rel="stylesheet" href="../src/index.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dbeafe 25%, #f0f9ff 50%, #ecfdf5 75%, #f0fdf4 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-emoji {
+            font-size: 32px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #16a34a 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #16a34a;
+            background: rgba(22, 163, 74, 0.1);
+        }
+
+        .main {
+            padding: 60px 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #16a34a 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 20px;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .roadmap-timeline {
+            position: relative;
+            margin: 60px 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #16a34a, #2563eb);
+            border-radius: 2px;
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 60px;
+            align-items: center;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            text-align: right;
+        }
+
+        .timeline-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .timeline-dot.completed {
+            background: #16a34a;
+        }
+
+        .timeline-dot.in-progress {
+            background: #f59e0b;
+        }
+
+        .timeline-dot.planned {
+            background: #6b7280;
+        }
+
+        .timeline-content {
+            width: calc(50% - 60px);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .timeline-quarter {
+            font-size: 14px;
+            font-weight: 600;
+            color: #16a34a;
+            margin-bottom: 8px;
+        }
+
+        .timeline-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+
+        .timeline-description {
+            color: #6b7280;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .timeline-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .timeline-features li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .timeline-features li:before {
+            content: "✨";
+            font-size: 16px;
+        }
+
+        .timeline-status {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: rgba(22, 163, 74, 0.1);
+            color: #16a34a;
+        }
+
+        .status-in-progress {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .status-planned {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+        }
+
+        .feedback-section {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .feedback-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #1f2937;
+        }
+
+        .feedback-description {
+            color: #6b7280;
+            margin-bottom: 24px;
+            font-size: 16px;
+        }
+
+        .feedback-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #16a34a 0%, #2563eb 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(22, 163, 74, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 24px;
+            }
+
+            .timeline-item {
+                flex-direction: row !important;
+                padding-left: 60px;
+            }
+
+            .timeline-item:nth-child(even) .timeline-content {
+                text-align: left;
+            }
+
+            .timeline-dot {
+                left: 24px;
+            }
+
+            .timeline-content {
+                width: calc(100% - 60px);
+            }
+
+            .page-title {
+                font-size: 36px;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../neverafy-landing.html" class="logo">
+                    <span class="logo-emoji">🥬</span>
+                    <span class="logo-text">Neverafy</span>
+                </a>
+                <a href="../neverafy-landing.html" class="back-btn">
+                    <span>←</span>
+                    Volver a inicio
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">🗺️ Roadmap de Neverafy</h1>
+                <p class="page-subtitle">
+                    Descubre las próximas funcionalidades que estamos desarrollando. 
+                    Tu feedback nos ayuda a priorizarlas.
+                </p>
+            </div>
+
+            <div class="roadmap-timeline">
+                <div class="timeline-line"></div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot completed">✓</div>
+                    <div class="timeline-content">
+                        <div class="timeline-quarter">Q4 2024 - Completado</div>
+                        <h3 class="timeline-title">🚀 MVP Lanzado</h3>
+                        <p class="timeline-description">
+                            La versión inicial de Neverafy ya está disponible con las funciones básicas.
+                        </p>
+                        <ul class="timeline-features">
+                            <li>Gestión básica de productos</li>
+                            <li>Escaneo OCR básico</li>
+                            <li>Alertas de caducidad</li>
+                            <li>Recetas con IA (limitadas)</li>
+                        </ul>
+                        <span class="timeline-status status-completed">✅ Completado</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot in-progress">⚡</div>
+                    <div class="timeline-content">
+                        <div class="timeline-quarter">Q1 2025 - En Desarrollo</div>
+                        <h3 class="timeline-title">📱 App Móvil Nativa</h3>
+                        <p class="timeline-description">
+                            Aplicación móvil optimizada con funciones offline y sincronización mejorada.
+                        </p>
+                        <ul class="timeline-features">
+                            <li>App iOS y Android nativa</li>
+                            <li>Modo offline básico</li>
+                            <li>Notificaciones push mejoradas</li>
+                            <li>Cámara optimizada para escaneo</li>
+                        </ul>
+                        <span class="timeline-status status-in-progress">🔄 En desarrollo</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot planned">📅</div>
+                    <div class="timeline-content">
+                        <div class="timeline-quarter">Q2 2025 - Planificado</div>
+                        <h3 class="timeline-title">🤖 IA Avanzada</h3>
+                        <p class="timeline-description">
+                            Mejoras significativas en reconocimiento y recomendaciones personalizadas.
+                        </p>
+                        <ul class="timeline-features">
+                            <li>OCR con 99% precisión</li>
+                            <li>Reconocimiento de frutas/verduras por imagen</li>
+                            <li>Predicción inteligente de caducidad</li>
+                            <li>Asistente de compras IA</li>
+                        </ul>
+                        <span class="timeline-status status-planned">📋 Planificado</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot planned">📅</div>
+                    <div class="timeline-content">
+                        <div class="timeline-quarter">Q3 2025 - Planificado</div>
+                        <h3 class="timeline-title">👨‍👩‍👧‍👦 Funciones Sociales</h3>
+                        <p class="timeline-description">
+                            Comparte tu nevera con familia y amigos, crea listas colaborativas.
+                        </p>
+                        <ul class="timeline-features">
+                            <li>Neveras compartidas familiares</li>
+                            <li>Listas de compra colaborativas</li>
+                            <li>Sistema de gamificación familiar</li>
+                            <li>Retos de sostenibilidad</li>
+                        </ul>
+                        <span class="timeline-status status-planned">📋 Planificado</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot planned">📅</div>
+                    <div class="timeline-content">
+                        <div class="timeline-quarter">Q4 2025 - Planificado</div>
+                        <h3 class="timeline-title">🛒 Integraciones Comerciales</h3>
+                        <p class="timeline-description">
+                            Conecta con tus supermercados favoritos y servicios de delivery.
+                        </p>
+                        <ul class="timeline-features">
+                            <li>Integración con Mercadona, Carrefour</li>
+                            <li>Comparador de precios automático</li>
+                            <li>Pedidos automáticos por IA</li>
+                            <li>Cashback por compras sostenibles</li>
+                        </ul>
+                        <span class="timeline-status status-planned">📋 Planificado</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot planned">📅</div>
+                    <div class="timeline-content">
+                        <div class="timeline-quarter">2026 - Futuro</div>
+                        <h3 class="timeline-title">🌍 Expansión Internacional</h3>
+                        <p class="timeline-description">
+                            Llevamos Neverafy a toda Europa con funciones localizadas.
+                        </p>
+                        <ul class="timeline-features">
+                            <li>Lanzamiento en Francia, Italia, Alemania</li>
+                            <li>Soporte para productos locales</li>
+                            <li>Integración con supermercados europeos</li>
+                            <li>API pública para desarrolladores</li>
+                        </ul>
+                        <span class="timeline-status status-planned">🔮 Futuro</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-section">
+                <h2 class="feedback-title">💬 ¿Qué te gustaría ver antes?</h2>
+                <p class="feedback-description">
+                    Tu opinión es muy importante para nosotros. Cuéntanos qué funcionalidades 
+                    te gustaría que priorizáramos o sugiere nuevas ideas.
+                </p>
+                <a href="mailto:hola@neverafy.com?subject=Feedback%20Roadmap" class="feedback-btn">
+                    <span>📧</span>
+                    Enviar Feedback
+                </a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -49,6 +49,9 @@ const ProductsView: React.FC<ProductsViewProps> = ({
   isPremium,
   userStats
 }) => {
+  console.log('📋 DEBUG ProductsView: Rendered with products:', products);
+  console.log('📋 DEBUG ProductsView: Products length:', products.length);
+  
   // Estados para filtros y búsqueda
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -119,6 +122,7 @@ const ProductsView: React.FC<ProductsViewProps> = ({
   };
 
   const handleFormSubmit = async (formData: NewProduct) => {
+    console.log('📝 DEBUG ProductsView: Received form data:', formData);
     setIsSubmitting(true);
     
     try {
@@ -126,7 +130,9 @@ const ProductsView: React.FC<ProductsViewProps> = ({
         // TODO: Implementar edición cuando esté la funcionalidad
         console.log('Editando producto:', editingProduct.id, formData);
       } else {
+        console.log('📝 DEBUG ProductsView: Calling onAddProduct');
         await onAddProduct(formData);
+        console.log('📝 DEBUG ProductsView: onAddProduct completed successfully');
       }
       
       setShowAddForm(false);

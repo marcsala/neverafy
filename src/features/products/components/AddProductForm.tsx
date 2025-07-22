@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Package, Calendar, Euro, Hash } from 'lucide-react';
-import { CATEGORIES } from '../../../shared/utils/constants';
-import { formatCategory, capitalize } from '../../../shared/utils/formatters';
-import { getCurrentDate } from '../../../shared/utils/dateUtils';
-import { Button } from '../../../shared/components/ui';
+import { CATEGORIES } from '@/shared/utils/constants';
+import { formatCategory, capitalize } from '@/shared/utils/formatters';
+import { getCurrentDate } from '@/shared/utils/dateUtils';
+import { Button } from '@/shared/components/ui';
 
 interface NewProduct {
   name: string;
@@ -103,8 +103,14 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('🔍 DEBUG: Form submitted with data:', formData);
+    console.log('🔍 DEBUG: Validation result:', validateForm());
+    
     if (validateForm()) {
+      console.log('🔍 DEBUG: Calling onSubmit with:', formData);
       onSubmit(formData);
+    } else {
+      console.log('🔍 DEBUG: Form validation failed, errors:', errors);
     }
   };
 
@@ -287,7 +293,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
           <div className="flex gap-3 pt-4">
             <Button
               type="submit"
-              loading={isLoading}
+              isLoading={isLoading}
               className="flex-1"
               variant="primary"
             >

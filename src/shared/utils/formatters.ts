@@ -3,8 +3,9 @@
 /**
  * Formatea números de precio en euros
  */
-export const formatPrice = (price: number): string => {
-  return `${price.toFixed(2)}€`;
+export const formatPrice = (price: number | undefined): string => {
+  const numPrice = Number(price) || 0;
+  return `${numPrice.toFixed(2)}€`;
 };
 
 /**

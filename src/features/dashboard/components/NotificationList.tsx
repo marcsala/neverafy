@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Bell, X, AlertTriangle, CheckCircle, Info, Crown } from 'lucide-react';
-import { formatRelativeTime } from '../../../shared/utils/formatters';
-import { NOTIFICATION_TYPES } from '../../../shared/utils/constants';
+import { formatRelativeTime } from '@/shared/utils/formatters';
+import { NOTIFICATION_TYPES } from '@/shared/utils/constants';
 
 interface Notification {
   id: string;
