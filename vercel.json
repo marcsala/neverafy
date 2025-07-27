@@ -1,20 +1,12 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "devCommand": "npm run dev",
+  "devCommand": "npm run dev", 
   "installCommand": "npm install",
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "api/claude.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
