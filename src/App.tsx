@@ -6,7 +6,7 @@ import { useAppHooks, useAppHandlers } from '@/shared/hooks';
 
 // Components
 import { LoadingScreen } from '@/shared/components/ui';
-import { AppLayout } from '@/shared/components/layout';
+import AppLayoutResponsive from '@/shared/components/layout/AppLayoutResponsive';
 import { LandingPage } from '@/features/landing';
 import { LoginPage, RegisterPage } from '@/features/auth';
 
@@ -51,7 +51,7 @@ const App: React.FC = () => {
           path="/*" 
           element={
             session ? (
-              <AppLayout
+              <AppLayoutResponsive
                 userStats={userStats}
                 isPremium={isPremium}
                 currentView={currentView}

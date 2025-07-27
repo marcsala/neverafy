@@ -1,5 +1,345 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+// Sección de Testimonios
+const TestimonialsSection: React.FC = () => {
+  const testimonials = [
+    {
+      name: "María González",
+      avatar: "https://ui-avatars.com/api/?name=MG&background=16a34a&color=fff&size=80",
+      rating: 5,
+      text: "He ahorrado más de 150€ en 3 meses. Ya no se me olvida nada en la nevera y las recetas IA son increíbles. Mi familia está encantada.",
+      location: "Madrid",
+      savings: "150€ ahorrados",
+      role: "Madre de familia"
+    },
+    {
+      name: "Carlos Martínez",
+      avatar: "https://ui-avatars.com/api/?name=CM&background=2563eb&color=fff&size=80",
+      rating: 5,
+      text: "Como chef profesional, me encanta cómo Neverafy me ayuda a aprovechar cada ingrediente. Las recetas IA son sorprendentemente creativas.",
+      location: "Barcelona",
+      savings: "80€ ahorrados",
+      role: "Chef profesional"
+    },
+    {
+      name: "Ana López",
+      avatar: "https://ui-avatars.com/api/?name=AL&background=dc2626&color=fff&size=80",
+      rating: 5,
+      text: "Desde que uso Neverafy, mi huella de carbono ha bajado un 30%. Es genial saber que estoy ayudando al planeta mientras ahorro dinero.",
+      location: "Valencia",
+      savings: "95€ ahorrados",
+      role: "Consultora ambiental"
+    }
+  ];
+
+  return (
+    <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-md rounded-2xl px-6 py-3 text-sm font-semibold mb-6 border border-white/30">
+            <span className="text-xl">💬</span>
+            Testimonios
+          </div>
+          <h2 className="text-5xl font-black mb-6">Lo que dicen nuestros usuarios</h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Más de 1,000 familias ya están ahorrando dinero y cuidando el planeta
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial, index) => (
+            <div 
+              key={index} 
+              className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white/30 hover:shadow-xl transition-all hover:scale-105 relative"
+            >
+              <div className="absolute -top-4 left-8 bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg">
+                {testimonial.savings}
+              </div>
+
+              <div className="flex items-center gap-1 mb-6 mt-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <span key={i} className="text-yellow-400 text-xl">★</span>
+                ))}
+              </div>
+
+              <p className="text-gray-700 leading-relaxed mb-6 text-lg italic">
+                "{testimonial.text}"
+              </p>
+
+              <div className="flex items-center gap-4">
+                <img 
+                  src={testimonial.avatar} 
+                  alt={testimonial.name}
+                  className="w-16 h-16 rounded-full shadow-lg"
+                />
+                <div>
+                  <h4 className="font-bold text-gray-800">{testimonial.name}</h4>
+                  <p className="text-sm text-gray-500">{testimonial.role}</p>
+                  <p className="text-sm text-gray-400 flex items-center gap-1">
+                    <span>📍</span> {testimonial.location}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid md:grid-cols-4 gap-8 mt-16 text-center">
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 border border-white/30">
+            <div className="text-3xl font-black text-green-600 mb-2">4.9/5</div>
+            <div className="text-sm text-gray-600">Rating promedio</div>
+          </div>
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 border border-white/30">
+            <div className="text-3xl font-black text-blue-600 mb-2">1,247</div>
+            <div className="text-sm text-gray-600">Usuarios activos</div>
+          </div>
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 border border-white/30">
+            <div className="text-3xl font-black text-purple-600 mb-2">127€</div>
+            <div className="text-sm text-gray-600">Ahorro promedio</div>
+          </div>
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 border border-white/30">
+            <div className="text-3xl font-black text-orange-600 mb-2">89%</div>
+            <div className="text-sm text-gray-600">Menos desperdicio</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Sección de Precios
+const PricingSection: React.FC = () => {
+  const [isAnnual, setIsAnnual] = useState(false);
+
+  const plans = [
+    {
+      name: "Gratis",
+      description: "Perfecto para empezar",
+      price: "0€",
+      period: "siempre",
+      originalPrice: null,
+      features: [
+        "Hasta 20 productos en nevera",
+        "Notificaciones básicas de vencimiento",
+        "3 escaneos OCR por mes",
+        "Estadísticas básicas",
+        "Recetas sugeridas básicas",
+        "Soporte por email"
+      ],
+      limitations: [
+        "Máximo 20 productos",
+        "Solo 3 escaneos/mes",
+        "Sin recetas IA personalizadas"
+      ],
+      ctaText: "Empezar Gratis",
+      ctaVariant: "secondary",
+      popular: false
+    },
+    {
+      name: "Premium",
+      description: "Para familias que quieren aprovechar todo",
+      price: isAnnual ? "3.99€" : "4.99€",
+      period: "mes",
+      originalPrice: isAnnual ? "4.99€" : null,
+      features: [
+        "Productos ILIMITADOS en nevera",
+        "OCR ilimitado con IA avanzada",
+        "Recetas personalizadas con IA",
+        "Analytics avanzados y trends",
+        "Exportar datos (CSV, PDF)",
+        "Compartir nevera familiar",
+        "Notificaciones push personalizadas",
+        "Soporte prioritario 24/7",
+        "Integración con supermercados",
+        "Modo sin conexión"
+      ],
+      limitations: [],
+      ctaText: "Probar 7 días GRATIS",
+      ctaVariant: "primary",
+      popular: true,
+      badge: "MÁS POPULAR",
+      trial: "7 días gratis, luego "
+    }
+  ];
+
+  return (
+    <section className="py-20 bg-white">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 bg-white/90 backdrop-blur-md rounded-2xl px-6 py-3 text-sm font-semibold mb-6 border border-white/30">
+            <span className="text-xl">💰</span>
+            Precios
+          </div>
+          <h2 className="text-5xl font-black mb-6">Simple y transparente</h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+            Elige el plan que mejor se adapte a tu familia. Siempre puedes cambiar después.
+          </p>
+
+          <div className="inline-flex items-center gap-4 bg-gray-100 rounded-2xl p-2 mb-12">
+            <button
+              onClick={() => setIsAnnual(false)}
+              className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                !isAnnual 
+                  ? 'bg-white text-gray-900 shadow-md' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Mensual
+            </button>
+            <button
+              onClick={() => setIsAnnual(true)}
+              className={`px-6 py-3 rounded-xl font-semibold transition-all relative ${
+                isAnnual 
+                  ? 'bg-white text-gray-900 shadow-md' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Anual
+              {isAnnual && (
+                <span className="absolute -top-3 -right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                  -20%
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {plans.map((plan, index) => (
+            <div 
+              key={index}
+              className={`relative bg-white rounded-3xl border-2 transition-all hover:shadow-xl hover:scale-105 ${
+                plan.popular 
+                  ? 'border-green-500 shadow-lg' 
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-2 rounded-2xl text-sm font-bold shadow-lg">
+                    {plan.badge}
+                  </div>
+                </div>
+              )}
+
+              <div className="p-8">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-black mb-2">{plan.name}</h3>
+                  <p className="text-gray-600 mb-6">{plan.description}</p>
+                  
+                  <div className="mb-6">
+                    <div className="flex items-center justify-center gap-2">
+                      {plan.originalPrice && (
+                        <span className="text-lg text-gray-400 line-through">
+                          {plan.originalPrice}
+                        </span>
+                      )}
+                      <span className="text-5xl font-black text-gray-900">
+                        {plan.price}
+                      </span>
+                      <span className="text-gray-600">/{plan.period}</span>
+                    </div>
+                    {plan.trial && (
+                      <p className="text-sm text-green-600 font-semibold mt-2">
+                        {plan.trial}{plan.price}/{plan.period}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <h4 className="font-bold mb-4 text-gray-900">✅ Incluye:</h4>
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-start gap-3">
+                        <span className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold mt-0.5">
+                          ✓
+                        </span>
+                        <span className="text-gray-700">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {plan.limitations && plan.limitations.length > 0 && (
+                    <div className="mt-6">
+                      <h4 className="font-bold mb-4 text-gray-900">⚠️ Limitaciones:</h4>
+                      <ul className="space-y-2">
+                        {plan.limitations.map((limitation, limitIndex) => (
+                          <li key={limitIndex} className="flex items-start gap-3">
+                            <span className="w-5 h-5 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-sm font-bold mt-0.5">
+                              !
+                            </span>
+                            <span className="text-gray-600 text-sm">{limitation}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                <Link
+                  to="/register"
+                  className={`w-full py-4 px-6 rounded-2xl font-bold text-lg transition-all hover:scale-105 flex items-center justify-center gap-2 ${
+                    plan.ctaVariant === 'primary'
+                      ? 'bg-gradient-to-r from-green-600 to-blue-600 text-white hover:shadow-xl'
+                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border-2 border-gray-200'
+                  }`}
+                >
+                  {plan.ctaVariant === 'primary' ? '🚀' : '👋'}
+                  {plan.ctaText}
+                </Link>
+
+                {plan.name === 'Premium' && (
+                  <p className="text-center text-sm text-gray-500 mt-4">
+                    Sin compromiso • Cancela cuando quieras
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex justify-center gap-10 mt-16 text-sm text-gray-600">
+          <div className="flex items-center gap-2">
+            <span className="text-green-500">🔒</span>
+            <span>Pago 100% seguro</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-blue-500">↩️</span>
+            <span>30 días garantía</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-purple-500">🇪🇸</span>
+            <span>Empresa española</span>
+          </div>
+        </div>
+
+        <div className="bg-gray-50 rounded-3xl p-8 mt-16">
+          <h3 className="text-xl font-bold text-center mb-6">Preguntas frecuentes sobre precios</h3>
+          <div className="grid md:grid-cols-2 gap-6 text-sm">
+            <div>
+              <h4 className="font-semibold mb-2">¿Puedo cambiar de plan después?</h4>
+              <p className="text-gray-600">Sí, puedes subir o bajar de plan en cualquier momento desde tu perfil.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">¿Qué incluye la prueba gratis?</h4>
+              <p className="text-gray-600">7 días completos con todas las funciones Premium. Sin restricciones.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">¿Puedo cancelar cuando quiera?</h4>
+              <p className="text-gray-600">Por supuesto. Sin permanencia ni compromisos. Cancela con un clic.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">¿Aceptáis Bizum?</h4>
+              <p className="text-gray-600">Sí, aceptamos Bizum, tarjetas y transferencias bancarias.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const LandingPage: React.FC = () => {
   return (
@@ -176,6 +516,9 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <TestimonialsSection />
+
       {/* Features Section */}
       <section id="features" className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="max-w-6xl mx-auto px-6">
@@ -223,6 +566,9 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <PricingSection />
 
       {/* Stats Banner */}
       <section className="py-20">
