@@ -150,20 +150,20 @@ const CleanLandingPage: React.FC = () => {
 
       {/* Resto del contenido continúa... */}
       {/* Hero Section */}
-      <section className="py-20 px-6">
+      <section className="py-12 md:py-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div>
-              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-6">
                 Tu nevera, <span className="text-blue-600">inteligente</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
                 Organiza tu nevera, ahorra dinero y cuida el planeta. Nunca más desperdicies comida.
               </p>
 
-              <div className="bg-gray-50 rounded-xl p-6 mb-8">
-                <h3 className="font-semibold text-gray-900 mb-4">¿Te suena familiar?</h3>
-                <div className="space-y-3">
+              <div className="bg-gray-50 rounded-xl p-4 md:p-6 mb-6 md:mb-8">
+                <h3 className="font-semibold text-gray-900 mb-3 md:mb-4">¿Te suena familiar?</h3>
+                <div className="space-y-2 md:space-y-3">
                   {[
                     'Se te olvida qué tienes en la nevera',
                     'Compras cosas que ya tenías en casa',
@@ -171,31 +171,31 @@ const CleanLandingPage: React.FC = () => {
                     'Desperdicias 250€ de comida al año'
                   ].map((problem, index) => (
                     <div key={index} className="flex items-center gap-3">
-                      <div className="w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-sm font-semibold">
+                      <div className="w-5 h-5 md:w-6 md:h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-sm font-semibold">
                         ×
                       </div>
-                      <span className="text-gray-700">{problem}</span>
+                      <span className="text-gray-700 text-sm md:text-base">{problem}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6 md:mb-8">
                 <Link 
                   to="/register" 
-                  className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-center hover:bg-blue-700 transition-colors"
+                  className="bg-blue-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl font-semibold text-center hover:bg-blue-700 transition-colors text-sm md:text-base"
                 >
                   Empezar Gratis
                 </Link>
                 <Link 
                   to="/login" 
-                  className="border border-gray-300 text-gray-700 px-8 py-4 rounded-xl font-semibold text-center hover:border-gray-400 transition-colors"
+                  className="border border-gray-300 text-gray-700 px-6 md:px-8 py-3 md:py-4 rounded-xl font-semibold text-center hover:border-gray-400 transition-colors text-sm md:text-base"
                 >
                   Iniciar Sesión
                 </Link>
               </div>
 
-              <div className="flex items-center gap-6 text-sm text-gray-500">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6 text-sm text-gray-500">
                 <div className="flex items-center gap-1">
                   <span className="text-yellow-500">★★★★★</span>
                   <span>4.9/5</span>
@@ -206,51 +206,51 @@ const CleanLandingPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-8 lg:mt-0">
               <div className="relative">
-                <div className="w-80 bg-gray-900 rounded-3xl p-2 shadow-2xl" style={{height: '640px'}}>
-                  <div className="h-full bg-gray-50 rounded-3xl p-6 overflow-hidden">
+                <div className="w-64 md:w-80 bg-gray-900 rounded-3xl p-2 shadow-2xl" style={{height: '512px'}}>
+                  <div className="h-full bg-gray-50 rounded-3xl p-4 md:p-6 overflow-hidden">
                     {/* Phone Status Bar */}
-                    <div className="flex justify-between items-center mb-6 text-sm font-medium">
+                    <div className="flex justify-between items-center mb-4 md:mb-6 text-xs md:text-sm font-medium">
                       <span>9:41</span>
                       <span>100%</span>
                     </div>
 
                     {/* App Header */}
-                    <div className="text-center mb-8">
-                      <h3 className="text-xl font-semibold text-gray-900">Neverafy</h3>
-                      <p className="text-sm text-gray-500">Tu nevera inteligente</p>
+                    <div className="text-center mb-6 md:mb-8">
+                      <h3 className="text-lg md:text-xl font-semibold text-gray-900">Neverafy</h3>
+                      <p className="text-xs md:text-sm text-gray-500">Tu nevera inteligente</p>
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-2 gap-3 mb-6">
-                      <div className="bg-white rounded-xl p-4 text-center shadow-sm">
-                        <div className="text-xl font-bold text-blue-600">127€</div>
+                    <div className="grid grid-cols-2 gap-2 md:gap-3 mb-4 md:mb-6">
+                      <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-sm">
+                        <div className="text-lg md:text-xl font-bold text-blue-600">127€</div>
                         <div className="text-xs text-gray-500">Ahorrados</div>
                       </div>
-                      <div className="bg-white rounded-xl p-4 text-center shadow-sm">
-                        <div className="text-xl font-bold text-gray-900">23</div>
+                      <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-sm">
+                        <div className="text-lg md:text-xl font-bold text-gray-900">23</div>
                         <div className="text-xs text-gray-500">Productos</div>
                       </div>
                     </div>
 
                     {/* Product List */}
                     <div className="space-y-2">
-                      <div className="bg-white rounded-lg p-3 border-l-4 border-green-500 shadow-sm">
+                      <div className="bg-white rounded-lg p-2 md:p-3 border-l-4 border-green-500 shadow-sm">
                         <div className="flex justify-between items-center">
-                          <span className="font-medium text-sm">🥛 Leche</span>
+                          <span className="font-medium text-xs md:text-sm">🥛 Leche</span>
                           <span className="text-xs text-gray-500">3 días</span>
                         </div>
                       </div>
-                      <div className="bg-amber-50 rounded-lg p-3 border-l-4 border-amber-500">
+                      <div className="bg-amber-50 rounded-lg p-2 md:p-3 border-l-4 border-amber-500">
                         <div className="flex justify-between items-center">
-                          <span className="font-medium text-sm">🍅 Tomates</span>
+                          <span className="font-medium text-xs md:text-sm">🍅 Tomates</span>
                           <span className="text-xs text-amber-600">Mañana</span>
                         </div>
                       </div>
-                      <div className="bg-red-50 rounded-lg p-3 border-l-4 border-red-500">
+                      <div className="bg-red-50 rounded-lg p-2 md:p-3 border-l-4 border-red-500">
                         <div className="flex justify-between items-center">
-                          <span className="font-medium text-sm">🧀 Queso</span>
+                          <span className="font-medium text-xs md:text-sm">🧀 Queso</span>
                           <span className="text-xs text-red-600">¡Hoy!</span>
                         </div>
                       </div>
@@ -259,10 +259,10 @@ const CleanLandingPage: React.FC = () => {
                 </div>
 
                 {/* Floating badges */}
-                <div className="absolute -top-4 -right-4 bg-white rounded-lg px-3 py-2 text-sm font-semibold text-blue-600 shadow-lg border border-gray-200">
+                <div className="absolute -top-2 md:-top-4 -right-2 md:-right-4 bg-white rounded-lg px-2 md:px-3 py-1 md:py-2 text-xs md:text-sm font-semibold text-blue-600 shadow-lg border border-gray-200">
                   IA Integrada
                 </div>
-                <div className="absolute -bottom-4 -left-4 bg-white rounded-lg px-3 py-2 text-sm font-semibold text-green-600 shadow-lg border border-gray-200">
+                <div className="absolute -bottom-2 md:-bottom-4 -left-2 md:-left-4 bg-white rounded-lg px-2 md:px-3 py-1 md:py-2 text-xs md:text-sm font-semibold text-green-600 shadow-lg border border-gray-200">
                   OCR Avanzado
                 </div>
               </div>
@@ -272,201 +272,201 @@ const CleanLandingPage: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Todo lo que necesitas para tu nevera
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Gestión inteligente con tecnología de vanguardia
-            </p>
-          </div>
+      <section id="features" className="py-12 md:py-20 bg-gray-50">
+      <div className="max-w-6xl mx-auto px-6">
+      <div className="text-center mb-12 md:mb-16">
+      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
+      Todo lo que necesitas para tu nevera
+      </h2>
+      <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+      Gestión inteligente con tecnología de vanguardia
+      </p>
+      </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
-                  <div className="text-blue-600 mb-4 flex justify-center">{feature.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">{feature.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+      {features.map((feature, index) => (
+      <div key={index} className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100 text-center">
+      <div className="text-blue-600 mb-3 md:mb-4 flex justify-center">{feature.icon}</div>
+      <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-2 md:mb-3">{feature.title}</h3>
+      <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
+      </div>
+      ))}
+      </div>
+      </div>
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20">
+      <section id="testimonials" className="py-12 md:py-20">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
               Lo que dicen nuestros usuarios
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg md:text-xl text-gray-600">
               Más de 1,200 familias ya están ahorrando dinero
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 relative">
-                <div className="absolute -top-3 left-6 bg-blue-600 text-white px-3 py-1 rounded-lg text-sm font-semibold">
+              <div key={index} className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100 relative">
+                <div className="absolute -top-2 md:-top-3 left-4 md:left-6 bg-blue-600 text-white px-2 md:px-3 py-1 rounded-lg text-xs md:text-sm font-semibold">
                   {testimonial.savings}
                 </div>
 
-                <div className="flex items-center gap-1 mb-4 mt-2">
+                <div className="flex items-center gap-1 mb-3 md:mb-4 mt-3 md:mt-2">
                   {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-yellow-400">★</span>
+                    <span key={i} className="text-yellow-400 text-sm md:text-base">★</span>
                   ))}
                 </div>
 
-                <p className="text-gray-700 mb-6 leading-relaxed">
+                <p className="text-gray-700 mb-4 md:mb-6 leading-relaxed text-sm md:text-base">
                   "{testimonial.text}"
                 </p>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm md:text-base">
                     {testimonial.avatar}
                   </div>
                   <div>
-                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                    <div className="text-sm text-gray-500">{testimonial.role}</div>
-                    <div className="text-sm text-gray-400">📍 {testimonial.location}</div>
+                    <div className="font-semibold text-gray-900 text-sm md:text-base">{testimonial.name}</div>
+                    <div className="text-xs md:text-sm text-gray-500">{testimonial.role}</div>
+                    <div className="text-xs md:text-sm text-gray-400">📍 {testimonial.location}</div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="grid md:grid-cols-4 gap-6 mt-16 text-center">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl font-bold text-blue-600 mb-2">4.9/5</div>
-              <div className="text-sm text-gray-600">Rating promedio</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-12 md:mt-16 text-center">
+            <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100">
+              <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1 md:mb-2">4.9/5</div>
+              <div className="text-xs md:text-sm text-gray-600">Rating promedio</div>
             </div>
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl font-bold text-gray-900 mb-2">1,247</div>
-              <div className="text-sm text-gray-600">Usuarios activos</div>
+            <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100">
+              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">1,247</div>
+              <div className="text-xs md:text-sm text-gray-600">Usuarios activos</div>
             </div>
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl font-bold text-green-600 mb-2">127€</div>
-              <div className="text-sm text-gray-600">Ahorro promedio</div>
+            <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100">
+              <div className="text-2xl md:text-3xl font-bold text-green-600 mb-1 md:mb-2">127€</div>
+              <div className="text-xs md:text-sm text-gray-600">Ahorro promedio</div>
             </div>
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl font-bold text-orange-600 mb-2">89%</div>
-              <div className="text-sm text-gray-600">Menos desperdicio</div>
+            <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100">
+              <div className="text-2xl md:text-3xl font-bold text-orange-600 mb-1 md:mb-2">89%</div>
+              <div className="text-xs md:text-sm text-gray-600">Menos desperdicio</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-gray-50">
+      <section id="pricing" className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
               Precios simples y transparentes
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg md:text-xl text-gray-600">
               Elige el plan que mejor se adapte a ti
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
             {/* Free Plan */}
-            <div className="bg-white rounded-xl border border-gray-200 p-8">
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Gratis</h3>
-                <p className="text-gray-600 mb-6">Perfecto para empezar</p>
-                <div className="text-4xl font-bold text-gray-900 mb-2">0€</div>
-                <div className="text-gray-500">para siempre</div>
+            <div className="bg-white rounded-xl border border-gray-200 p-6 md:p-8">
+              <div className="text-center mb-6 md:mb-8">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Gratis</h3>
+                <p className="text-gray-600 mb-4 md:mb-6 text-sm md:text-base">Perfecto para empezar</p>
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">0€</div>
+                <div className="text-gray-500 text-sm md:text-base">para siempre</div>
               </div>
 
-              <div className="space-y-4 mb-8">
+              <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">Hasta 20 productos</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">Hasta 20 productos</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">Alertas de vencimiento</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">Alertas de vencimiento</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">3 escaneos OCR/mes</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">3 escaneos OCR/mes</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">Estadísticas básicas</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">Estadísticas básicas</span>
                 </div>
               </div>
 
               <Link
                 to="/register"
-                className="w-full bg-gray-100 text-gray-900 py-3 px-6 rounded-xl font-semibold text-center block hover:bg-gray-200 transition-colors"
+                className="w-full bg-gray-100 text-gray-900 py-3 px-6 rounded-xl font-semibold text-center block hover:bg-gray-200 transition-colors text-sm md:text-base"
               >
                 Empezar Gratis
               </Link>
             </div>
 
             {/* Premium Plan */}
-            <div className="bg-white rounded-xl border-2 border-blue-500 p-8 relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+            <div className="bg-white rounded-xl border-2 border-blue-500 p-6 md:p-8 relative">
+              <div className="absolute -top-3 md:-top-4 left-1/2 transform -translate-x-1/2">
+                <div className="bg-blue-600 text-white px-3 md:px-4 py-1 md:py-2 rounded-lg text-xs md:text-sm font-semibold">
                   MÁS POPULAR
                 </div>
               </div>
 
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
-                <p className="text-gray-600 mb-6">Para familias que quieren todo</p>
-                <div className="text-4xl font-bold text-gray-900 mb-2">4.99€</div>
-                <div className="text-gray-500">por mes</div>
-                <div className="text-sm text-blue-600 font-semibold mt-2">
+              <div className="text-center mb-6 md:mb-8">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Premium</h3>
+                <p className="text-gray-600 mb-4 md:mb-6 text-sm md:text-base">Para familias que quieren todo</p>
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">4.99€</div>
+                <div className="text-gray-500 text-sm md:text-base">por mes</div>
+                <div className="text-xs md:text-sm text-blue-600 font-semibold mt-2">
                   7 días gratis, luego 4.99€/mes
                 </div>
               </div>
 
-              <div className="space-y-4 mb-8">
+              <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">Productos ILIMITADOS</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">Productos ILIMITADOS</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">OCR ilimitado</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">OCR ilimitado</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">Recetas personalizadas IA</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">Recetas personalizadas IA</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">Analytics avanzados</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">Analytics avanzados</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">Nevera familiar compartida</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">Nevera familiar compartida</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-bold">✓</div>
-                  <span className="text-gray-700">Soporte prioritario 24/7</span>
+                  <div className="w-4 h-4 md:w-5 md:h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs md:text-sm font-bold">✓</div>
+                  <span className="text-gray-700 text-sm md:text-base">Soporte prioritario 24/7</span>
                 </div>
               </div>
 
               <Link
                 to="/register"
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-xl font-semibold text-center block hover:bg-blue-700 transition-colors"
+                className="w-full bg-blue-600 text-white py-3 px-6 rounded-xl font-semibold text-center block hover:bg-blue-700 transition-colors text-sm md:text-base"
               >
                 Probar 7 días GRATIS
               </Link>
 
-              <p className="text-center text-sm text-gray-500 mt-4">
+              <p className="text-center text-xs md:text-sm text-gray-500 mt-4">
                 Sin compromiso • Cancela cuando quieras
               </p>
             </div>
           </div>
 
-          <div className="flex justify-center gap-8 mt-12 text-sm text-gray-600">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8 mt-8 md:mt-12 text-xs md:text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <span>🔒</span>
               <span>Pago 100% seguro</span>
