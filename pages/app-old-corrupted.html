@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Nevera - Neverafy</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dbeafe 100%);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 900;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #16a34a, #22c55e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .welcome-section {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 900;
+            color: #16a34a;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .fridge-section {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .add-button {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .add-button:hover {
+            background: #15803d;
+            transform: translateY(-2px);
+        }
+        
+        .product-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            border-left: 4px solid #16a34a;
+            transition: all 0.3s ease;
+        }
+        
+        .product-item:hover {
+            transform: translateX(4px);
+        }
+        
+        .product-item.warning {
+            border-left-color: #f59e0b;
+            background: rgba(254, 243, 199, 0.8);
+        }
+        
+        .product-item.danger {
+            border-left-color: #ef4444;
+            background: rgba(254, 226, 226, 0.8);
+        }
+        
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .product-expiry {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .suggestions-section {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .suggestion-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: transform 0.3s ease;
+        }
+        
+        .suggestion-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .suggestion-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .suggestion-description {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .logout-button {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-button:hover {
+            background: #4b5563;
+        }
+        
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+        
+        .modal.hidden {
+            display: none;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            animation: bounceIn 0.5s ease-out;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="app-logo">
+                <span style="font-size: 32px;">🥬</span>
+                <span style="background: linear-gradient(45deg, #16a34a, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Neverafy</span>
+            </div>
+            
+            <div class="user-menu">
+                <span id="user-name">¡Hola!</span>
+                <div class="user-avatar" id="user-avatar">U</div>
+                <button class="logout-button" onclick="logout()">Salir</button>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <div class="welcome-section">
+                <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 16px; color: #1f2937;">
+                    🎉 ¡Bienvenido a tu nevera inteligente!
+                </h1>
+                <p style="color: #6b7280; font-size: 18px;">
+                    Gestiona tus alimentos, reduce el desperdicio y descubre recetas increíbles con IA.
+                </p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🥕</div>
+                    <div class="stat-number" id="total-products">8</div>
+                    <div class="stat-label">Productos en nevera</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-number" id="expiring-soon">3</div>
+                    <div class="stat-label">Caducan pronto</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-number" id="money-saved">47€</div>
+                    <div class="stat-label">Ahorrado este mes</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🌱</div>
+                    <div class="stat-number" id="co2-saved">2.3kg</div>
+                    <div class="stat-label">CO₂ evitado</div>
+                </div>
+            </div>
+            
+            <div class="content-grid">
+                <div class="fridge-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            🧊 Mi Nevera
+                        </h2>
+                        <button class="add-button" onclick="addProduct()">
+                            ➕ Añadir producto
+                        </button>
+                    </div>
+                    
+                    <div class="product-list" id="product-list">
+                        <!-- Los productos se cargarán aquí -->
+                    </div>
+                </div>
+                
+                <div class="suggestions-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            🤖 Sugerencias IA
+                        </h2>
+                    </div>
+                    
+                    <div id="suggestions-list">
+                        <!-- Las sugerencias se cargarán aquí -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal para añadir producto -->
+    <div id="add-product-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAddProductModal()">×</button>
+            <div class="modal-header">
+                <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 20px; text-align: center;">
+                    ➕ Añadir Producto
+                </h3>
+            </div>
+            
+            <form id="add-product-form" onsubmit="handleAddProduct(event)">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px;">Nombre del producto</label>
+                    <input type="text" id="product-name" placeholder="Ej: Leche, Tomates, Yogurt..." 
+                           style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px;" required>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px;">Fecha de caducidad</label>
+                    <input type="date" id="expiry-date" 
+                           style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px;" required>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px;">Cantidad</label>
+                    <input type="text" id="quantity" placeholder="Ej: 1 litro, 500g, 6 unidades..." 
+                           style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px;" required>
+                </div>
+                
+                <button type="submit" style="width: 100%; background: #16a34a; color: white; padding: 16px; border: none; border-radius: 12px; font-weight: 600; font-size: 16px; cursor: pointer;">
+                    ✅ Añadir a mi nevera
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Datos de ejemplo
+        let products = [
+            {
+                id: 1,
+                name: "Leche entera",
+                quantity: "1 litro",
+                expiryDate: "2025-07-23",
+                daysLeft: 3,
+                category: "lácteos",
+                icon: "🥛"
+            },
+            {
+                id: 2,
+                name: "Tomates cherry",
+                quantity: "500g",
+                expiryDate: "2025-07-25",
+                daysLeft: 5,
+                category: "verduras",
+                icon: "🍅"
+            },
+            {
+                id: 3,
+                name: "Yogur natural",
+                quantity: "4 unidades",
+                expiryDate: "2025-07-22",
+                daysLeft: 2,
+                category: "lácteos",
+                icon: "🥛"
+            },
+            {
+                id: 4,
+                name: "Pollo fileteado",
+                quantity: "600g",
+                expiryDate: "2025-07-21",
+                daysLeft: 1,
+                category: "carnes",
+                icon: "🍗"
+            },
+            {
+                id: 5,
+                name: "Pan integral",
+                quantity: "1 barra",
+                expiryDate: "2025-07-24",
+                daysLeft: 4,
+                category: "panadería",
+                icon: "🍞"
+            },
+            {
+                id: 6,
+                name: "Manzanas",
+                quantity: "1kg",
+                expiryDate: "2025-07-28",
+                daysLeft: 8,
+                category: "frutas",
+                icon: "🍎"
+            },
+            {
+                id: 7,
+                name: "Queso manchego",
+                quantity: "200g",
+                expiryDate: "2025-08-05",
+                daysLeft: 16,
+                category: "lácteos",
+                icon: "🧀"
+            },
+            {
+                id: 8,
+                name: "Huevos",
+                quantity: "12 unidades",
+                expiryDate: "2025-07-30",
+                daysLeft: 10,
+                category: "lácteos",
+                icon: "🥚"
+            }
+        ];
+        
+        let suggestions = [
+            {
+                type: "recipe",
+                title: "🍗 Pollo con tomates cherry",
+                description: "Usa el pollo y tomates que caducan pronto. Receta lista en 25 min.",
+                urgency: "high"
+            },
+            {
+                type: "warning",
+                title: "⚠️ Yogur caduca mañana",
+                description: "Úsalo hoy en un batido o postre. ¿Quieres una receta?",
+                urgency: "high"
+            },
+            {
+                type: "recipe",
+                title: "🥪 Tostadas con queso",
+                description: "Desayuno perfecto con pan integral y queso manchego.",
+                urgency: "medium"
+            },
+            {
+                type: "tip",
+                title: "💡 Conserva mejor las manzanas",
+                description: "Guárdalas en el cajón de verduras para que duren más.",
+                urgency: "low"
+            }
+        ];
+        
+        // Cargar nombre de usuario
+        function loadUserName() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const nameFromUrl = urlParams.get('name');
+            const nameFromStorage = localStorage.getItem('userName');
+            
+            const userName = nameFromUrl || nameFromStorage || 'Usuario';
+            localStorage.setItem('userName', userName);
+            
+            document.getElementById('user-name').textContent = `¡Hola ${userName}!`;
+            document.getElementById('user-avatar').textContent = userName.charAt(0).toUpperCase();
+        }
+        
+        // Renderizar productos
+        function renderProducts() {
+            const productList = document.getElementById('product-list');
+            
+            if (products.length === 0) {
+                productList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="urgent-header">
+                            <div>
+                                <div class="urgent-title">${product.name} ${timeText}</div>
+                                <div class="urgent-details">${product.quantity}</div>
+                            </div>
+                            <button class="urgent-action">Ver recetas</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Navegación bottom nav
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                switch(index) {
+                    case 0: // Home
+                        break;
+                    case 1: // Nevera
+                        showNotification('Vista completa de nevera');
+                        break;
+                    case 2: // Recetas
+                        showNotification('Recetas con IA');
+                        break;
+                    case 3: // Perfil
+                        showNotification('Perfil de usuario');
+                        break;
+                }
+            });
+        });
+
+        // Cerrar modal haciendo clic fuera
+        document.getElementById('add-product-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddProductModal();
+            }
+        });
+
+        // Prevenir zoom en iOS
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        // Inicializar app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUser();
+            renderProducts();
+            updateStats();
+            updateUrgentAlerts();
+        });
+    </script>
+</body>
+</html>empty-icon">🥬</div>
+                        <h3>Tu nevera está vacía</h3>
+                        <p>Añade productos para empezar a gestionar tu nevera inteligente</p>
+                        <button class="add-button" onclick="addProduct()" style="margin-top: 20px;">
+                            ➕ Añadir primer producto
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            productList.innerHTML = products.map(product => {
+                let statusClass = '';
+                let statusText = '';
+                
+                if (product.daysLeft <= 1) {
+                    statusClass = 'danger';
+                    statusText = product.daysLeft === 0 ? 'Caduca hoy' : 'Caduca mañana';
+                } else if (product.daysLeft <= 3) {
+                    statusClass = 'warning';
+                    statusText = `Caduca en ${product.daysLeft} días`;
+                } else {
+                    statusText = `Caduca en ${product.daysLeft} días`;
+                }
+                
+                return `
+                    <div class="product-item ${statusClass}">
+                        <div class="product-header">
+                            <div>
+                                <span style="font-size: 20px; margin-right: 8px;">${product.icon}</span>
+                                <span class="product-name">${product.name}</span>
+                                <span style="color: #6b7280; font-size: 14px; margin-left: 8px;">${product.quantity}</span>
+                            </div>
+                            <div class="product-actions">
+                                <button class="action-btn" onclick="useProduct(${product.id})" title="Usar producto">
+                                    ✅
+                                </button>
+                                <button class="action-btn" onclick="removeProduct(${product.id})" title="Eliminar">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                        <div class="product-expiry">${statusText}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Renderizar sugerencias
+        function renderSuggestions() {
+            const suggestionsList = document.getElementById('suggestions-list');
+            
+            suggestionsList.innerHTML = suggestions.map(suggestion => {
+                let bgColor = '';
+                if (suggestion.urgency === 'high') bgColor = 'background: rgba(254, 226, 226, 0.8);';
+                else if (suggestion.urgency === 'medium') bgColor = 'background: rgba(254, 243, 199, 0.8);';
+                
+                return `
+                    <div class="suggestion-card" style="${bgColor}">
+                        <div class="suggestion-title">${suggestion.title}</div>
+                        <div class="suggestion-description">${suggestion.description}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Funciones de productos
+        function addProduct() {
+            document.getElementById('add-product-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Establecer fecha mínima de hoy
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('expiry-date').min = today;
+        }
+        
+        function closeAddProductModal() {
+            document.getElementById('add-product-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('add-product-form').reset();
+        }
+        
+        function handleAddProduct(event) {
+            event.preventDefault();
+            
+            const productName = document.getElementById('product-name').value;
+            const expiryDate = document.getElementById('expiry-date').value;
+            const quantity = document.getElementById('quantity').value;
+            
+            const today = new Date();
+            const expiry = new Date(expiryDate);
+            const daysLeft = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+            
+            // Asignar icono basado en el nombre del producto
+            const productIcons = {
+                'leche': '🥛', 'yogur': '🥛', 'queso': '🧀', 'huevos': '🥚',
+                'tomate': '🍅', 'lechuga': '🥬', 'zanahoria': '🥕', 'cebolla': '🧅',
+                'manzana': '🍎', 'plátano': '🍌', 'naranja': '🍊', 'fresa': '🍓',
+                'pollo': '🍗', 'carne': '🥩', 'pescado': '🐟', 'jamón': '🥓',
+                'pan': '🍞', 'pasta': '🍝', 'arroz': '🍚', 'patata': '🥔'
+            };
+            
+            let icon = '🥬'; // icono por defecto
+            for (const [key, value] of Object.entries(productIcons)) {
+                if (productName.toLowerCase().includes(key)) {
+                    icon = value;
+                    break;
+                }
+            }
+            
+            const newProduct = {
+                id: Date.now(),
+                name: productName,
+                quantity: quantity,
+                expiryDate: expiryDate,
+                daysLeft: daysLeft,
+                category: 'general',
+                icon: icon
+            };
+            
+            products.push(newProduct);
+            updateStats();
+            renderProducts();
+            renderSuggestions();
+            closeAddProductModal();
+            
+            // Mostrar notificación de éxito
+            showNotification(`✅ ${productName} añadido a tu nevera`);
+        }
+        
+        function useProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                products = products.filter(p => p.id !== productId);
+                updateStats();
+                renderProducts();
+                renderSuggestions();
+                showNotification(`✅ ${product.name} usado correctamente`);
+            }
+        }
+        
+        function removeProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product && confirm(`¿Eliminar ${product.name} de tu nevera?`)) {
+                products = products.filter(p => p.id !== productId);
+                updateStats();
+                renderProducts();
+                renderSuggestions();
+                showNotification(`🗑️ ${product.name} eliminado`);
+            }
+        }
+        
+        // Actualizar estadísticas
+        function updateStats() {
+            const totalProducts = products.length;
+            const expiringSoon = products.filter(p => p.daysLeft <= 3).length;
+            
+            document.getElementById('total-products').textContent = totalProducts;
+            document.getElementById('expiring-soon').textContent = expiringSoon;
+        }
+
+        // Renderizar productos
+        function renderProducts() {
+            const productsList = document.getElementById('products-list');
+            
+            if (products.length === 0) {
+                productsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-title">Tu nevera está vacía</div>
+                        <div class="empty-description">Añade productos para empezar a gestionar tu nevera inteligente</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const displayProducts = products.slice(0, 3);
+            
+            productsList.innerHTML = displayProducts.map(product => {
+                let badgeClass = 'safe';
+                let badgeText = 'Fresco';
+                
+                if (product.daysLeft <= 0) {
+                    badgeClass = 'urgent';
+                    badgeText = 'Hoy';
+                } else if (product.daysLeft === 1) {
+                    badgeClass = 'urgent';
+                    badgeText = 'Mañana';
+                } else if (product.daysLeft <= 3) {
+                    badgeClass = 'warning';
+                    badgeText = 'Pronto';
+                }
+                
+                return `
+                    <div class="product-item">
+                        <div class="product-info">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-quantity">${product.quantity}</div>
+                        </div>
+                        <div class="product-status">
+                            <div class="expiry-badge ${badgeClass}">${badgeText}</div>
+                            <div class="days-text">${product.daysLeft} días</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Actualizar alertas urgentes
+        function updateUrgentAlerts() {
+            const urgentProducts = products.filter(p => p.daysLeft <= 1);
+            const alertsContainer = document.getElementById('urgent-alerts');
+            
+            if (urgentProducts.length === 0) {
+                alertsContainer.style.display = 'none';
+                return;
+            }
+            
+            alertsContainer.style.display = 'block';
+            alertsContainer.innerHTML = urgentProducts.map(product => {
+                const isToday = product.daysLeft <= 0;
+                const cardClass = isToday ? '' : 'warning';
+                const timeText = isToday ? 'caduca hoy' : 'caduca mañana';
+                
+                return `
+                    <div class="urgent-card ${cardClass}">
+                        <div class="urgent-header">
+                            <div>
+                                <div class="urgent-title">${product.name} ${timeText}</div>
+                                <div class="urgent-details">${product.quantity}</div>
+                            </div>
+                            <button class="urgent-action">Ver recetas</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Navegación bottom nav
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                switch(index) {
+                    case 0: // Home
+                        break;
+                    case 1: // Nevera
+                        showNotification('Vista completa de nevera');
+                        break;
+                    case 2: // Recetas
+                        showNotification('Recetas con IA');
+                        break;
+                    case 3: // Perfil
+                        showNotification('Perfil de usuario');
+                        break;
+                }
+            });
+        });
+
+        // Cerrar modal haciendo clic fuera
+        document.getElementById('add-product-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddProductModal();
+            }
+        });
+
+        // Prevenir zoom en iOS
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        // Inicializar app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUser();
+            renderProducts();
+            updateStats();
+            updateUrgentAlerts();
+        });
+    </script>
+</body>
+</html></div>
+                            </div>
+                            <button class="urgent-action">Ver recetas</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Navegación bottom nav
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                switch(index) {
+                    case 0: // Home
+                        break;
+                    case 1: // Nevera
+                        showNotification('Vista completa de nevera');
+                        break;
+                    case 2: // Recetas
+                        showNotification('Recetas con IA');
+                        break;
+                    case 3: // Perfil
+                        showNotification('Perfil de usuario');
+                        break;
+                }
+            });
+        });
+
+        // Cerrar modal haciendo clic fuera
+        document.getElementById('add-product-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddProductModal();
+            }
+        });
+
+        // Prevenir zoom en iOS
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        // Inicializar app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUser();
+            renderProducts();
+            updateStats();
+            updateUrgentAlerts();
+        });
+    </script>
+</body>
+</html> isToday = product.daysLeft <= 0;
+                const cardClass = isToday ? '' : 'warning';
+                const timeText = isToday ? 'caduca hoy' : 'caduca mañana';
+                
+                return `
+                    <div class="urgent-card ${cardClass}">
+                        <div class="urgent-header">
+                            <div>
+                                <div class="urgent-title">${product.name} ${timeText}</div>
+                                <div class="urgent-details">${product.quantity}</div>
+                            </div>
+                            <button class="urgent-action">Ver recetas</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Navegación bottom nav
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                switch(index) {
+                    case 0: // Home
+                        break;
+                    case 1: // Nevera
+                        showNotification('Vista completa de nevera');
+                        break;
+                    case 2: // Recetas
+                        showNotification('Recetas con IA');
+                        break;
+                    case 3: // Perfil
+                        showNotification('Perfil de usuario');
+                        break;
+                }
+            });
+        });
+
+        // Cerrar modal haciendo clic fuera
+        document.getElementById('add-product-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddProductModal();
+            }
+        });
+
+        // Prevenir zoom en iOS
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+
+        // Inicializar app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUser();
+            renderProducts();
+            updateStats();
+            updateUrgentAlerts();
+        });
+    </script>
+</body>
+</html>
+            document.getElementById('expiring-soon').textContent = expiringSoon;
+            
+            // Actualizar sugerencias basadas en productos que caducan
+            updateSuggestions();
+        }
+        
+        function updateSuggestions() {
+            suggestions = [];
+            
+            // Productos que caducan hoy o mañana
+            const urgentProducts = products.filter(p => p.daysLeft <= 1);
+            urgentProducts.forEach(product => {
+                suggestions.push({
+                    type: "warning",
+                    title: `⚠️ ${product.name} caduca ${product.daysLeft === 0 ? 'hoy' : 'mañana'}`,
+                    description: "Úsalo pronto para evitar desperdiciar comida. ¿Quieres una receta?",
+                    urgency: "high"
+                });
+            });
+            
+            // Sugerencias de recetas basadas en productos disponibles
+            if (products.some(p => p.name.toLowerCase().includes('pollo')) && 
+                products.some(p => p.name.toLowerCase().includes('tomate'))) {
+                suggestions.push({
+                    type: "recipe",
+                    title: "🍗 Pollo con tomates",
+                    description: "Receta perfecta con los ingredientes que tienes. ¡25 minutos!",
+                    urgency: "medium"
+                });
+            }
+            
+            if (products.some(p => p.name.toLowerCase().includes('huevo')) && 
+                products.some(p => p.name.toLowerCase().includes('pan'))) {
+                suggestions.push({
+                    type: "recipe",
+                    title: "🍳 Tostadas francesas",
+                    description: "Desayuno delicioso con huevos y pan. Perfecto para empezar el día.",
+                    urgency: "medium"
+                });
+            }
+            
+            // Consejo general
+            if (suggestions.length < 3) {
+                suggestions.push({
+                    type: "tip",
+                    title: "💡 Organiza tu nevera",
+                    description: "Coloca los productos que caducan pronto al frente para verlos mejor.",
+                    urgency: "low"
+                });
+            }
+        }
+        
+        // Mostrar notificaciones
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #16a34a;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Función de logout
+        function logout() {
+            if (confirm('¿Cerrar sesión?')) {
+                localStorage.removeItem('userName');
+                window.location.href = '../neverafy-landing.html';
+            }
+        }
+        
+        // Cerrar modal haciendo clic fuera
+        document.getElementById('add-product-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAddProductModal();
+            }
+        });
+        
+        // Inicializar app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserName();
+            renderProducts();
+            renderSuggestions();
+            updateStats();
+        });
+    </script>
+</body>
+</html>

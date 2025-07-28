@@ -1,17 +1,27 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Hooks
-import { useAppHooks, useAppHandlers } from '@/shared/hooks';
+// Nuevos componentes limpios
+import CleanLandingPage from './components/CleanLandingPage';
+import { CleanLoginPage, CleanRegisterPage } from './components/CleanAuthPages';
+import DashboardComponent from './components/Dashboard';
 
-// Components
-import { LoadingScreen } from '@/shared/components/ui';
-import AppLayoutResponsive from '@/shared/components/layout/AppLayoutResponsive';
-import { LandingPage } from '@/features/landing';
-import { LoginPage, RegisterPage } from '@/features/auth';
+// Hooks (mantener los existentes si están disponibles)
+// import { useAppHooks, useAppHandlers } from '@/shared/hooks';
+
+// Components (componentes de carga si están disponibles)
+// import { LoadingScreen } from '@/shared/components/ui';
 
 const App: React.FC = () => {
-  // Consolidar todos los hooks de la app
+  // Simulamos estado básico - aquí puedes integrar con tus hooks existentes
+  const [session, setSession] = React.useState<any>(null);
+  const [loading, setLoading] = React.useState(false);
+  
+  // Estado básico para el dashboard
+  const [userName] = React.useState('Usuario');
+
+  // Si tienes hooks disponibles, puedes descomentar esto:
+  /*
   const {
     session,
     loading,
@@ -29,45 +39,53 @@ const App: React.FC = () => {
     stats
   } = useAppHooks();
 
-  // Handlers de la app
   const { handleLogout, handleUpgradeToPremium } = useAppHandlers({
     signOut,
     setIsPremium
   });
+  */
 
-  // Estados de carga
-  if (loading) return <LoadingScreen />;
+  // Estados de carga - descomenta si tienes LoadingScreen
+  // if (loading) return <LoadingScreen />;
 
   return (
     <Router>
       <Routes>
         {/* Rutas públicas */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<CleanLandingPage />} />
+        <Route path="/login" element={<CleanLoginPage />} />
+        <Route path="/register" element={<CleanRegisterPage />} />
+        
+        {/* Ruta del dashboard */}
+        <Route 
+          path="/dashboard" 
+          element={
+            <DashboardComponent
+              userName={userName}
+              // userStats={userStats}
+              // stats={stats}
+              // notifications={notifications}
+              // products={products}
+              // productActions={productActions}
+            />
+          } 
+        />
         
         {/* Rutas protegidas - solo si hay sesión */}
         <Route 
           path="/*" 
           element={
             session ? (
-              <AppLayoutResponsive
-                userStats={userStats}
-                isPremium={isPremium}
-                currentView={currentView}
-                stats={stats}
-                notifications={notifications}
-                products={products}
-                setCurrentView={setCurrentView}
-                setIsPremium={setIsPremium}
-                handleLogout={handleLogout}
-                productActions={productActions}
-                ocrLogic={ocrLogic}
-                recipeLogic={recipeLogic}
-                handleUpgradeToPremium={handleUpgradeToPremium}
+              <DashboardComponent
+                userName={userName}
+                // userStats={userStats}
+                // stats={stats}
+                // notifications={notifications}
+                // products={products}
+                // productActions={productActions}
               />
             ) : (
-              <LoginPage />
+              <CleanLoginPage />
             )
           } 
         />
