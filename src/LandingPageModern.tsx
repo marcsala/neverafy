@@ -258,7 +258,7 @@ const LandingPageModern: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto px-4 sm:px-0">
+          <div className="space-y-8 max-w-md mx-auto md:grid md:grid-cols-2 md:gap-8 md:max-w-4xl md:space-y-0">
             {/* Plan Gratuito */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 relative">
               <div className="text-center mb-8">

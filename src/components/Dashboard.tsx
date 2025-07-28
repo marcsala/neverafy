@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import FridgeView from './FridgeView';
 
 interface Product {
   id: number;
@@ -36,6 +37,7 @@ const DashboardComponent: React.FC<DashboardProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState('');
   const [isMobile, setIsMobile] = useState(false);
+  const [currentView, setCurrentView] = useState<'dashboard' | 'fridge'>('dashboard');
 
   useEffect(() => {
     const checkMobile = () => {
@@ -93,6 +95,18 @@ const DashboardComponent: React.FC<DashboardProps> = ({
 
   const today = new Date().toISOString().split('T')[0];
 
+  // Si estamos en la vista de nevera, mostrar el componente FridgeView
+  if (currentView === 'fridge') {
+    return (
+      <FridgeView
+        products={products}
+        onUpdateProducts={setProducts}
+        onBack={() => setCurrentView('dashboard')}
+        isMobile={isMobile}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Desktop Sidebar - Solo visible en desktop */}
@@ -128,13 +142,16 @@ const DashboardComponent: React.FC<DashboardProps> = ({
               </a>
             </li>
             <li>
-              <a href="#" className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+              <button
+                onClick={() => setCurrentView('fridge')}
+                className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors"
+              >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M2.5 2v6h19V2"/>
                   <path d="M2.5 8v10c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V8"/>
                 </svg>
                 Mi Nevera
-              </a>
+              </button>
             </li>
             <li>
               <button
@@ -436,7 +453,10 @@ const DashboardComponent: React.FC<DashboardProps> = ({
           <span className="text-xs font-medium">Inicio</span>
         </button>
         
-        <button className="flex flex-col items-center gap-1 text-gray-400 p-2">
+        <button
+          onClick={() => setCurrentView('fridge')}
+          className="flex flex-col items-center gap-1 text-gray-400 p-2"
+        >
           <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M2.5 2v6h19V2"/>
             <path d="M2.5 8v10c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V8"/>
