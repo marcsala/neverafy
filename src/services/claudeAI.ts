@@ -40,7 +40,7 @@ export class ClaudeAIService {
   private static readonly API_URL = 'https://api.anthropic.com/v1/messages';
   private static readonly MODEL = 'claude-sonnet-4-20250514';
   private static readonly MAX_TOKENS = 2000;
-  private static readonly API_KEY = import.meta.env.VITE_CLAUDE_API_KEY || '***REMOVED***';
+  private static readonly API_KEY = import.meta.env.VITE_CLAUDE_API_KEY;
 
   /**
    * Convierte imagen a base64
