@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-// Nuevos componentes limpios
-import CleanLandingPage from './components/CleanLandingPage';
+// Nueva landing page moderna
+import LandingPageModern from './LandingPageModern';
 import { CleanLoginPage, CleanRegisterPage } from './components/CleanAuthPages';
 import DashboardComponent from './components/Dashboard';
 
@@ -52,7 +52,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         {/* Rutas públicas */}
-        <Route path="/" element={<CleanLandingPage />} />
+        <Route path="/" element={<LandingPageModern />} />
         <Route path="/login" element={<CleanLoginPage />} />
         <Route path="/register" element={<CleanRegisterPage />} />
         
