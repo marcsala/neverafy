@@ -84,8 +84,8 @@ const DashboardComponent: React.FC<DashboardProps> = ({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Desktop Sidebar */}
-      <aside className="sidebar fixed left-0 top-0 h-screen bg-white border-r border-gray-200 p-6 hidden md:block" style={{width: '280px', zIndex: 100}}>
-        <div className="sidebar-header mb-8">
+      <aside className="fixed left-0 top-0 w-70 h-screen bg-white border-r border-gray-200 p-6 z-50 hidden md:block">
+        <div className="mb-8">
           <div className="text-2xl font-semibold text-gray-900 mb-2">Neverafy</div>
           <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
             <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center text-white font-semibold">
@@ -175,8 +175,9 @@ const DashboardComponent: React.FC<DashboardProps> = ({
       </header>
 
       {/* Main Content */}
-      <main className="md:pl-280 min-h-screen" style={{paddingLeft: typeof window !== 'undefined' && window.innerWidth >= 768 ? '280px' : '0'}}>
-        <div className="max-w-6xl mx-auto p-6">
+      <main className="md:ml-70 min-h-screen pb-20 md:pb-0">
+        {/* Desktop Layout */}
+        <div className="hidden md:block max-w-6xl mx-auto p-6">
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Main Column */}
             <div className="lg:col-span-2 space-y-6">
@@ -244,7 +245,7 @@ const DashboardComponent: React.FC<DashboardProps> = ({
               </section>
             </div>
 
-            {/* Sidebar Content */}
+            {/* Desktop Sidebar Content */}
             <div className="space-y-6">
               {/* Add Product Button */}
               <button
@@ -280,10 +281,112 @@ const DashboardComponent: React.FC<DashboardProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Mobile Layout */}
+        <div className="md:hidden">
+          {/* Urgent Alerts Mobile */}
+          {urgentProducts.length > 0 && (
+            <section className="p-6">
+              {urgentProducts.map((product) => {
+                const isToday = product.daysLeft < 1;
+                return (
+                  <div
+                    key={product.id}
+                    className={`bg-white rounded-xl p-5 mb-3 border-l-4 shadow-sm ${
+                      isToday ? 'border-red-500' : 'border-amber-500'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-semibold text-gray-900 mb-1">
+                          {product.name} {isToday ? 'caduca hoy' : 'caduca mañana'}
+                        </div>
+                        <div className="text-sm text-gray-500">{product.quantity}</div>
+                      </div>
+                      <button className="text-blue-600 font-medium text-sm hover:text-blue-700 transition-colors">
+                        Ver recetas
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </section>
+          )}
+
+          {/* Add Product Button Mobile */}
+          <section className="px-6 pb-6">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="w-full h-14 bg-blue-600 text-white rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-blue-700 transition-colors"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Añadir producto
+            </button>
+          </section>
+
+          {/* Stats Mobile */}
+          <section className="px-6 pb-6">
+            <div className="flex gap-4 overflow-x-auto pb-2">
+              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 text-center min-w-[140px]">
+                <div className="text-2xl font-bold text-gray-900 mb-1">{products.length}</div>
+                <div className="text-sm text-gray-500">Total productos</div>
+              </div>
+              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 text-center min-w-[140px]">
+                <div className="text-2xl font-bold text-gray-900 mb-1">{expiringSoon}</div>
+                <div className="text-sm text-gray-500">Caducan pronto</div>
+              </div>
+              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 text-center min-w-[140px]">
+                <div className="text-2xl font-bold text-gray-900 mb-1">47€</div>
+                <div className="text-sm text-gray-500">Ahorrado este mes</div>
+              </div>
+              <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 text-center min-w-[140px]">
+                <div className="text-2xl font-bold text-gray-900 mb-1">2.3kg</div>
+                <div className="text-sm text-gray-500">CO₂ evitado</div>
+              </div>
+            </div>
+          </section>
+
+          {/* Products List Mobile */}
+          <section className="px-6">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-xl font-semibold text-gray-900">Mi nevera</h2>
+              <button className="text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                Ver todo
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              {products.map((product) => {
+                const badge = getExpiryBadge(product.daysLeft);
+                return (
+                  <div key={product.id} className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex justify-between items-center">
+                    <div>
+                      <div className="font-semibold text-gray-900 mb-1">{product.name}</div>
+                      <div className="text-sm text-gray-500">{product.quantity}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-1 ${
+                        badge.class === 'urgent' ? 'bg-red-50 text-red-600' :
+                        badge.class === 'warning' ? 'bg-amber-50 text-amber-600' :
+                        'bg-green-50 text-green-600'
+                      }`}>
+                        {badge.text}
+                      </div>
+                      <div className="text-xs text-gray-400">{product.daysLeft} días</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex justify-between items-center z-50">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3 flex justify-between items-center z-50">
         <button className="flex flex-col items-center gap-1 text-blue-600 p-2">
           <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
