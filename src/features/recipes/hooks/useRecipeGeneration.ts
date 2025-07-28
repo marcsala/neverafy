@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { generateAIRecipes } from '../../../services/claudeApi';
+import ClaudeAIService from '../../../services/claudeAI';
 import { getDaysToExpiry } from '../../../shared/utils/dateUtils';
 import { ENHANCED_RECIPE_DATABASE, FREEMIUM_LIMITS, POINTS, CO2_SAVED_PER_RECIPE } from '../../../shared/utils/constants';
 
@@ -20,6 +20,7 @@ export const useRecipeGeneration = ({
   const [isGeneratingRecipes, setIsGeneratingRecipes] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
 
+  // Generar recetas urgentes usando Claude IA
   const generateAIRecipesHandler = useCallback(async (urgentProducts: any[]) => {
     // Verificar límites freemium
     if (!isPremium && userStats.recipesGenerated >= FREEMIUM_LIMITS.RECIPES_MONTHLY) {
@@ -29,7 +30,7 @@ export const useRecipeGeneration = ({
     setIsGeneratingRecipes(true);
 
     try {
-      const recipes = await generateAIRecipes(urgentProducts);
+      const recipes = await ClaudeAIService.generateUrgentRecipes(urgentProducts);
       setGeneratedRecipes(recipes);
       
       setUserStats(prev => ({
@@ -40,12 +41,40 @@ export const useRecipeGeneration = ({
 
       return recipes;
     } catch (error) {
-      console.error('Error generating recipes:', error);
+      console.error('Error generating urgent recipes:', error);
       throw error;
     } finally {
       setIsGeneratingRecipes(false);
     }
   }, [isPremium, userStats.recipesGenerated, setUserStats]);
+
+  // Generar recetas variadas usando Claude IA
+  const generateVariedRecipes = useCallback(async () => {
+    // Verificar límites freemium
+    if (!isPremium && userStats.recipesGenerated >= FREEMIUM_LIMITS.RECIPES_MONTHLY) {
+      throw new Error('🔒 Has alcanzado el límite de 5 recetas mensuales. ¡Actualiza a Premium para recetas ilimitadas!');
+    }
+
+    setIsGeneratingRecipes(true);
+
+    try {
+      const recipes = await ClaudeAIService.generateVariedRecipes(products);
+      setGeneratedRecipes(recipes);
+      
+      setUserStats(prev => ({
+        ...prev,
+        recipesGenerated: prev.recipesGenerated + 1,
+        points: prev.points + POINTS.GENERATE_RECIPE
+      }));
+
+      return recipes;
+    } catch (error) {
+      console.error('Error generating varied recipes:', error);
+      throw error;
+    } finally {
+      setIsGeneratingRecipes(false);
+    }
+  }, [products, isPremium, userStats.recipesGenerated, setUserStats]);
 
   const getSuggestedRecipes = useCallback(() => {
     const urgentProducts = Array.isArray(products) 
@@ -92,6 +121,7 @@ export const useRecipeGeneration = ({
     isGeneratingRecipes,
     selectedRecipe,
     generateAIRecipesHandler,
+    generateVariedRecipes,
     getSuggestedRecipes,
     markRecipeAsCooked,
     setGeneratedRecipes,

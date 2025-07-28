@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, X, Loader2, Zap, CheckCircle, AlertTriangle, Plus, Package, Calendar, DollarSign } from 'lucide-react';
+import { Camera, X, Loader2, Zap, CheckCircle, AlertTriangle, Plus, Package, Calendar, DollarSign, Receipt, Image } from 'lucide-react';
 
 const CameraView = ({
   isPremium,
@@ -9,10 +9,13 @@ const CameraView = ({
   setSelectedImage,
   setImagePreview,
   setOcrResults,
-  processImage,
+  processExpiryImage,
+  processReceiptImage,
   isProcessingOCR,
+  processingType,
   ocrResults,
   addDetectedProductToFridge,
+  addReceiptProductsToFridge,
   getAlertColor,
   getDaysToExpiry,
   fileInputRef
@@ -23,7 +26,7 @@ const CameraView = ({
         <Camera className="w-8 h-8 text-blue-600" />
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Smart Camera OCR</h2>
-          <p className="text-gray-600">Reconocimiento inteligente de productos y fechas</p>
+          <p className="text-gray-600">Reconocimiento inteligente de productos y fechas con Claude IA</p>
         </div>
         <div className="ml-auto">
           <div className="text-right">
@@ -93,26 +96,58 @@ const CameraView = ({
         />
 
         {imagePreview && !ocrResults && (
-          <div className="text-center">
-            <button
-              onClick={processImage}
-              disabled={isProcessingOCR || (!isPremium && userStats.ocrUsed >= 3)}
-              className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
-            >
-              {isProcessingOCR ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Analizando con IA...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-5 h-5" />
-                  Analizar Productos
-                </>
-              )}
-            </button>
+          <div className="space-y-4">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">¿Qué quieres analizar?</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Botón para fecha de caducidad */}
+                <button
+                  onClick={processExpiryImage}
+                  disabled={isProcessingOCR || (!isPremium && userStats.ocrUsed >= 3)}
+                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 justify-center"
+                >
+                  {isProcessingOCR && processingType === 'expiry' ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Analizando fecha...
+                    </>
+                  ) : (
+                    <>
+                      <Image className="w-5 h-5" />
+                      <div className="text-left">
+                        <div className="font-bold">Fecha de caducidad</div>
+                        <div className="text-sm opacity-90">Un solo producto</div>
+                      </div>
+                    </>
+                  )}
+                </button>
+
+                {/* Botón para ticket completo */}
+                <button
+                  onClick={processReceiptImage}
+                  disabled={isProcessingOCR || (!isPremium && userStats.ocrUsed >= 3)}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 justify-center"
+                >
+                  {isProcessingOCR && processingType === 'receipt' ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Procesando ticket...
+                    </>
+                  ) : (
+                    <>
+                      <Receipt className="w-5 h-5" />
+                      <div className="text-left">
+                        <div className="font-bold">Ticket de compra</div>
+                        <div className="text-sm opacity-90">Múltiples productos</div>
+                      </div>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+            
             {!isPremium && userStats.ocrUsed >= 3 && (
-              <p className="text-red-600 text-sm mt-2">
+              <p className="text-red-600 text-sm text-center">
                 Límite alcanzado. Actualiza a Premium para análisis ilimitados.
               </p>
             )}
@@ -131,12 +166,15 @@ const CameraView = ({
             <AlertTriangle className="w-8 h-8 text-orange-600" />
           )}
           <div>
-            <h3 className="text-xl font-bold text-gray-800">Resultados del Análisis</h3>
+            <h3 className="text-xl font-bold text-gray-800">
+              {ocrResults.receiptData ? 'Ticket Procesado' : 'Resultados del Análisis'}
+            </h3>
             <p className="text-gray-600">{ocrResults.message}</p>
           </div>
         </div>
 
-        {ocrResults.success && ocrResults.products?.length > 0 ? (
+        {/* Resultados de productos individuales */}
+        {ocrResults.success && ocrResults.products?.length > 0 && (
           <div className="space-y-4">
             {ocrResults.products.map((product, index) => {
               const daysToExpiry = getDaysToExpiry(product.expiryDate);
@@ -207,14 +245,65 @@ const CameraView = ({
               );
             })}
           </div>
-        ) : (
+        )}
+
+        {/* Resultados de ticket de compra */}
+        {ocrResults.success && ocrResults.receiptData && (
+          <div className="space-y-4">
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Receipt className="w-6 h-6 text-purple-600" />
+                  <div>
+                    <h4 className="font-bold text-gray-800 text-lg">{ocrResults.receiptData.store}</h4>
+                    <p className="text-sm text-gray-600">{new Date(ocrResults.receiptData.date).toLocaleDateString('es-ES')}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-gray-800">{ocrResults.receiptData.total.toFixed(2)}€</p>
+                  <p className="text-sm text-gray-600">{ocrResults.receiptData.items.length} productos</p>
+                </div>
+              </div>
+
+              <div className="space-y-2 mb-4">
+                {ocrResults.receiptData.items.map((item, index) => (
+                  <div key={index} className="flex justify-between items-center py-2 px-3 bg-white rounded border">
+                    <div className="flex items-center gap-2">
+                      <Package className="w-4 h-4 text-gray-500" />
+                      <span className="font-medium text-gray-800">{item.name}</span>
+                      {item.quantity > 1 && (
+                        <span className="text-sm text-gray-500">x{item.quantity}</span>
+                      )}
+                    </div>
+                    <span className="font-semibold text-gray-800">{item.price.toFixed(2)}€</span>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => addReceiptProductsToFridge(ocrResults.receiptData)}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                Añadir todos los productos a mi nevera
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Estado vacío */}
+        {!ocrResults.success && (
           <div className="text-center py-8">
             <AlertTriangle className="w-16 h-16 text-orange-300 mx-auto mb-4" />
             <p className="text-gray-600">
-              No se detectaron productos con fechas claras en esta imagen.
+              {ocrResults.receiptData !== undefined 
+                ? 'No se pudo procesar el ticket correctamente.' 
+                : 'No se detectaron productos con fechas claras en esta imagen.'}
             </p>
             <p className="text-sm text-gray-500 mt-2">
-              Intenta con una imagen más clara donde se vean las fechas de vencimiento.
+              {ocrResults.receiptData !== undefined
+                ? 'Intenta con una imagen más clara del ticket completo.'
+                : 'Intenta con una imagen más clara donde se vean las fechas de vencimiento.'}
             </p>
           </div>
         )}
