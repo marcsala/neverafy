@@ -35,6 +35,18 @@ const DashboardComponent: React.FC<DashboardProps> = ({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const showNotification = (message: string) => {
     setNotification(message);
@@ -83,8 +95,14 @@ const DashboardComponent: React.FC<DashboardProps> = ({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-0 w-70 h-screen bg-white border-r border-gray-200 p-6 z-50 hidden md:block">
+      {/* Desktop Sidebar - Solo visible en desktop */}
+      <aside 
+        className="fixed left-0 top-0 h-screen bg-white border-r border-gray-200 p-6 z-50"
+        style={{
+          width: '280px',
+          display: isMobile ? 'none' : 'block'
+        }}
+      >
         <div className="mb-8">
           <div className="text-2xl font-semibold text-gray-900 mb-2">Neverafy</div>
           <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
@@ -153,8 +171,13 @@ const DashboardComponent: React.FC<DashboardProps> = ({
         </nav>
       </aside>
 
-      {/* Mobile Header */}
-      <header className="md:hidden bg-white p-4 border-b border-gray-200 sticky top-0 z-50">
+      {/* Mobile Header - Solo visible en móvil */}
+      <header 
+        className="bg-white p-4 border-b border-gray-200 sticky top-0 z-50"
+        style={{
+          display: isMobile ? 'block' : 'none'
+        }}
+      >
         <div className="flex justify-between items-center">
           <div className="text-xl font-semibold text-gray-900">Neverafy</div>
           <div className="flex items-center gap-4">
@@ -175,9 +198,20 @@ const DashboardComponent: React.FC<DashboardProps> = ({
       </header>
 
       {/* Main Content */}
-      <main className="md:ml-70 min-h-screen pb-20 md:pb-0">
-        {/* Desktop Layout */}
-        <div className="hidden md:block max-w-6xl mx-auto p-6">
+      <main 
+        className="min-h-screen"
+        style={{
+          marginLeft: isMobile ? '0' : '280px',
+          paddingBottom: isMobile ? '80px' : '0'
+        }}
+      >
+        {/* Desktop Layout - Solo visible en desktop */}
+        <div 
+          className="max-w-6xl mx-auto p-6"
+          style={{
+            display: isMobile ? 'none' : 'block'
+          }}
+        >
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Main Column */}
             <div className="lg:col-span-2 space-y-6">
@@ -282,8 +316,10 @@ const DashboardComponent: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Mobile Layout */}
-        <div className="md:hidden">
+        {/* Mobile Layout - Solo visible en móvil */}
+        <div style={{
+          display: isMobile ? 'block' : 'none'
+        }}>
           {/* Urgent Alerts Mobile */}
           {urgentProducts.length > 0 && (
             <section className="p-6">
@@ -385,8 +421,13 @@ const DashboardComponent: React.FC<DashboardProps> = ({
         </div>
       </main>
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3 flex justify-between items-center z-50">
+      {/* Mobile Bottom Navigation - Solo visible en móvil */}
+      <nav 
+        className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3 flex justify-between items-center z-50"
+        style={{
+          display: isMobile ? 'flex' : 'none'
+        }}
+      >
         <button className="flex flex-col items-center gap-1 text-blue-600 p-2">
           <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
