@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FridgeView from './FridgeView';
 import ProfileView from './ProfileView';
+import { useSupabaseProducts, useSupabaseUserStats } from '../shared/hooks/useSupabase';
 
 interface Product {
   id: number;
@@ -17,6 +18,7 @@ interface DashboardProps {
   products?: Product[];
   productActions?: any;
   userName?: string;
+  userId?: string;
 }
 
 const DashboardComponent: React.FC<DashboardProps> = ({
@@ -25,20 +27,52 @@ const DashboardComponent: React.FC<DashboardProps> = ({
   notifications,
   products: initialProducts,
   productActions,
-  userName = 'Usuario'
+  userName = 'Usuario',
+  userId
 }) => {
-  const [products, setProducts] = useState<Product[]>(initialProducts || [
-    {id: 1, name: "Leche entera", quantity: "1 litro", expiryDate: "2025-07-30", daysLeft: 3},
-    {id: 2, name: "Tomates cherry", quantity: "500g", expiryDate: "2025-08-01", daysLeft: 5},
-    {id: 3, name: "Yogur natural", quantity: "4 unidades", expiryDate: "2025-07-28", daysLeft: 1},
-    {id: 4, name: "Pollo fileteado", quantity: "600g", expiryDate: "2025-07-29", daysLeft: 2},
-    {id: 5, name: "Pan integral", quantity: "1 barra", expiryDate: "2025-08-01", daysLeft: 5}
-  ]);
+  // Usar hooks de Supabase para datos reales
+  const { products: realProducts, loading: productsLoading, addProduct, deleteProduct: removeProduct, refetch } = useSupabaseProducts(userId);
+  const { userStats: realUserStats, loading: statsLoading } = useSupabaseUserStats(userId);
+  
+  // Convertir productos de Supabase al formato local
+  const convertSupabaseProduct = (supabaseProduct: any): Product => {
+    const today = new Date();
+    const expiryDate = new Date(supabaseProduct.expiry_date);
+    const daysLeft = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    
+    return {
+      id: parseInt(supabaseProduct.id) || Date.now(),
+      name: supabaseProduct.name,
+      quantity: supabaseProduct.quantity?.toString() || '1 unidad',
+      expiryDate: supabaseProduct.expiry_date,
+      daysLeft
+    };
+  };
+  
+  // Usar productos reales de Supabase si están disponibles
+  const [products, setProducts] = useState<Product[]>(
+    realProducts.length > 0 
+      ? realProducts.map(convertSupabaseProduct)
+      : initialProducts || [
+          {id: 1, name: "Leche entera", quantity: "1 litro", expiryDate: "2025-07-30", daysLeft: 3},
+          {id: 2, name: "Tomates cherry", quantity: "500g", expiryDate: "2025-08-01", daysLeft: 5},
+          {id: 3, name: "Yogur natural", quantity: "4 unidades", expiryDate: "2025-07-28", daysLeft: 1},
+          {id: 4, name: "Pollo fileteado", quantity: "600g", expiryDate: "2025-07-29", daysLeft: 2},
+          {id: 5, name: "Pan integral", quantity: "1 barra", expiryDate: "2025-08-01", daysLeft: 5}
+        ]
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState('');
   const [isMobile, setIsMobile] = useState(false);
   const [currentView, setCurrentView] = useState<'dashboard' | 'fridge' | 'profile'>('dashboard');
+
+  // Actualizar productos cuando cambien los datos de Supabase
+  useEffect(() => {
+    if (realProducts.length > 0) {
+      setProducts(realProducts.map(convertSupabaseProduct));
+    }
+  }, [realProducts]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -56,7 +90,7 @@ const DashboardComponent: React.FC<DashboardProps> = ({
     setTimeout(() => setNotification(''), 3000);
   };
 
-  const handleAddProduct = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleAddProduct = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     
@@ -64,24 +98,47 @@ const DashboardComponent: React.FC<DashboardProps> = ({
     const expiryDate = formData.get('expiry-date') as string;
     const quantity = formData.get('quantity') as string;
     
-    const today = new Date();
-    const expiry = new Date(expiryDate);
-    const daysLeft = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    
-    const newProduct: Product = {
-      id: Date.now(),
-      name: productName,
-      quantity: quantity,
-      expiryDate: expiryDate,
-      daysLeft: daysLeft
-    };
-    
-    setProducts(prev => [...prev, newProduct]);
-    setIsModalOpen(false);
-    showNotification(`${productName} añadido a tu nevera`);
-    
-    // Reset form
-    event.currentTarget.reset();
+    try {
+      if (userId) {
+        // Usar Supabase para guardar el producto
+        const supabaseProduct = await addProduct({
+          name: productName,
+          category: 'general', // Podrías añadir selección de categoría
+          expiry_date: expiryDate,
+          quantity: quantity,
+          source: 'manual'
+        });
+        
+        if (supabaseProduct) {
+          showNotification(`${productName} añadido a tu nevera`);
+          setIsModalOpen(false);
+          event.currentTarget.reset();
+          return;
+        }
+      }
+      
+      // Fallback: añadir localmente si no hay userId o falla Supabase
+      const today = new Date();
+      const expiry = new Date(expiryDate);
+      const daysLeft = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      
+      const newProduct: Product = {
+        id: Date.now(),
+        name: productName,
+        quantity: quantity,
+        expiryDate: expiryDate,
+        daysLeft: daysLeft
+      };
+      
+      setProducts(prev => [...prev, newProduct]);
+      showNotification(`${productName} añadido a tu nevera`);
+    } catch (error) {
+      console.error('Error adding product:', error);
+      showNotification('Error al añadir producto');
+    } finally {
+      setIsModalOpen(false);
+      event.currentTarget.reset();
+    }
   };
 
   const urgentProducts = products.filter(p => p.daysLeft < 2);

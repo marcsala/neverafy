@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { signInWithEmail, signUpWithEmail, initializeUserStats } from '../services/supabase';
 
 // Login Page Component
 export const CleanLoginPage: React.FC = () => {
@@ -16,10 +17,16 @@ export const CleanLoginPage: React.FC = () => {
     setMessage('');
 
     try {
-      // Simular autenticación - aquí irá la lógica real
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setMessage('¡Inicio de sesión exitoso!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      const { data, error } = await signInWithEmail(email, password);
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      if (data.user) {
+        setMessage('¡Inicio de sesión exitoso!');
+        setTimeout(() => navigate('/dashboard'), 1000);
+      }
     } catch (error: any) {
       setMessage(`Error: ${error.message}`);
     } finally {
@@ -143,10 +150,19 @@ export const CleanRegisterPage: React.FC = () => {
     }
 
     try {
-      // Simular registro - aquí irá la lógica real
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setMessage('¡Cuenta creada exitosamente!');
-      setTimeout(() => navigate('/dashboard'), 1000);
+      const { data, error } = await signUpWithEmail(email, password);
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      if (data.user) {
+        // Inicializar estadísticas de usuario
+        await initializeUserStats(data.user.id);
+        
+        setMessage('¡Cuenta creada exitosamente! Revisa tu email para confirmar.');
+        setTimeout(() => navigate('/dashboard'), 2000);
+      }
     } catch (error: any) {
       setMessage(`Error: ${error.message}`);
     } finally {

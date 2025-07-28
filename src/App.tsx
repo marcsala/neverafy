@@ -1,10 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useSupabaseAuth } from './shared/hooks/useSupabase';
 
 // Nueva landing page moderna
 import LandingPageModern from './LandingPageModern';
 import { CleanLoginPage, CleanRegisterPage } from './components/CleanAuthPages';
 import DashboardComponent from './components/Dashboard';
+import RoadmapPage from './components/RoadmapPage';
 
 // Hooks (mantener los existentes si están disponibles)
 // import { useAppHooks, useAppHandlers } from '@/shared/hooks';
@@ -13,12 +15,25 @@ import DashboardComponent from './components/Dashboard';
 // import { LoadingScreen } from '@/shared/components/ui';
 
 const App: React.FC = () => {
-  // Simulamos estado básico - aquí puedes integrar con tus hooks existentes
-  const [session, setSession] = React.useState<any>(null);
-  const [loading, setLoading] = React.useState(false);
+  // Usar autenticación real de Supabase
+  const { user, session, loading, isAuthenticated } = useSupabaseAuth();
   
   // Estado básico para el dashboard
-  const [userName] = React.useState('Usuario');
+  const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuario';
+
+  // Loading screen mientras se carga la sesión
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <span className="text-white text-2xl font-bold">N</span>
+          </div>
+          <p className="text-gray-600">Cargando...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Si tienes hooks disponibles, puedes descomentar esto:
   /*
@@ -55,19 +70,20 @@ const App: React.FC = () => {
         <Route path="/" element={<LandingPageModern />} />
         <Route path="/login" element={<CleanLoginPage />} />
         <Route path="/register" element={<CleanRegisterPage />} />
+        <Route path="/roadmap" element={<RoadmapPage />} />
         
         {/* Ruta del dashboard */}
         <Route 
           path="/dashboard" 
           element={
-            <DashboardComponent
-              userName={userName}
-              // userStats={userStats}
-              // stats={stats}
-              // notifications={notifications}
-              // products={products}
-              // productActions={productActions}
-            />
+            isAuthenticated ? (
+              <DashboardComponent
+                userName={userName}
+                userId={user?.id}
+              />
+            ) : (
+              <CleanLoginPage />
+            )
           } 
         />
         
@@ -75,14 +91,10 @@ const App: React.FC = () => {
         <Route 
           path="/*" 
           element={
-            session ? (
+            isAuthenticated ? (
               <DashboardComponent
                 userName={userName}
-                // userStats={userStats}
-                // stats={stats}
-                // notifications={notifications}
-                // products={products}
-                // productActions={productActions}
+                userId={user?.id}
               />
             ) : (
               <CleanLoginPage />
