@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import FridgeView from './FridgeView';
+import ProfileView from './ProfileView';
 
 interface Product {
   id: number;
@@ -37,7 +38,7 @@ const DashboardComponent: React.FC<DashboardProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notification, setNotification] = useState('');
   const [isMobile, setIsMobile] = useState(false);
-  const [currentView, setCurrentView] = useState<'dashboard' | 'fridge'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'fridge' | 'profile'>('dashboard');
 
   useEffect(() => {
     const checkMobile = () => {
@@ -103,6 +104,18 @@ const DashboardComponent: React.FC<DashboardProps> = ({
         onUpdateProducts={setProducts}
         onBack={() => setCurrentView('dashboard')}
         isMobile={isMobile}
+      />
+    );
+  }
+
+  // Si estamos en la vista de perfil, mostrar el componente ProfileView
+  if (currentView === 'profile') {
+    return (
+      <ProfileView
+        onBack={() => setCurrentView('dashboard')}
+        isMobile={isMobile}
+        userName={userName}
+        userEmail="usuario@neverafy.com"
       />
     );
   }
@@ -176,13 +189,16 @@ const DashboardComponent: React.FC<DashboardProps> = ({
               </a>
             </li>
             <li>
-              <a href="#" className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+              <button
+                onClick={() => setCurrentView('profile')}
+                className="w-full flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors"
+              >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                   <circle cx="12" cy="7" r="4"/>
                 </svg>
                 Perfil
-              </a>
+              </button>
             </li>
           </ul>
         </nav>
@@ -483,7 +499,10 @@ const DashboardComponent: React.FC<DashboardProps> = ({
           <span className="text-xs font-medium">Recetas</span>
         </button>
         
-        <button className="flex flex-col items-center gap-1 text-gray-400 p-2">
+        <button
+          onClick={() => setCurrentView('profile')}
+          className="flex flex-col items-center gap-1 text-gray-400 p-2"
+        >
           <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
             <circle cx="12" cy="7" r="4"/>

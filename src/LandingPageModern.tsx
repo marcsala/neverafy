@@ -18,6 +18,7 @@ const LandingPageModern: React.FC = () => {
               <a href="#features" className="text-gray-600 hover:text-gray-900 font-medium">Funciones</a>
               <a href="#pricing" className="text-gray-600 hover:text-gray-900 font-medium">Precios</a>
               <a href="#testimonials" className="text-gray-600 hover:text-gray-900 font-medium">Testimonios</a>
+              <a href="/roadmap" className="text-gray-600 hover:text-gray-900 font-medium">Roadmap</a>
               <a href="/login" className="text-gray-600 hover:text-gray-900 font-medium">Iniciar Sesión</a>
               <a href="/register" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:shadow-lg transition-all">
                 Prueba Gratis
@@ -429,6 +430,7 @@ const LandingPageModern: React.FC = () => {
               <div className="space-y-3">
                 <a href="/login" className="block text-gray-400 hover:text-white transition-colors">Iniciar Sesión</a>
                 <a href="/register" className="block text-gray-400 hover:text-white transition-colors">Registrarse</a>
+                <a href="/roadmap" className="block text-gray-400 hover:text-white transition-colors">Roadmap</a>
               </div>
             </div>
             
