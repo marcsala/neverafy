@@ -188,7 +188,7 @@ const RecipesIntegration: React.FC<RecipesIntegrationProps> = ({ products, userI
               ✨ Recetas Generadas por Claude IA ({generatedRecipes.length})
             </h2>
 
-            <div className="grid gap-6">
+            <div className="space-y-6">
               {generatedRecipes.map((recipe, index) => (
                 <div key={index} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-start mb-4">

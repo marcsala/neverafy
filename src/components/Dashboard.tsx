@@ -449,9 +449,118 @@ const DashboardComponent: React.FC<DashboardProps> = ({
           </div>
         </div>
 
-        {/* Mobile Layout (similar al anterior pero con botón de recetas) */}
-        <div style={{ display: isMobile ? 'block' : 'none' }}>
-          {/* Resto del contenido móvil... */}
+        {/* Mobile Layout */}
+        <div style={{ display: isMobile ? 'block' : 'none' }} className="p-4 space-y-6">
+          {/* Urgent Alerts - Mobile */}
+          {urgentProducts.length > 0 && (
+            <section>
+              {urgentProducts.map((product) => {
+                const isToday = product.daysLeft < 1;
+                return (
+                  <div
+                    key={product.id}
+                    className={`bg-white rounded-xl p-4 mb-3 border-l-4 shadow-sm ${
+                      isToday ? 'border-red-500' : 'border-amber-500'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-semibold text-gray-900 mb-1">
+                          {product.name} {isToday ? 'caduca hoy' : 'caduca mañana'}
+                        </div>
+                        <div className="text-sm text-gray-500">{product.quantity}</div>
+                      </div>
+                      <button 
+                        onClick={() => setCurrentView('recipes')}
+                        className="text-blue-600 font-medium text-sm hover:text-blue-700 transition-colors"
+                      >
+                        Ver recetas ✨
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </section>
+          )}
+
+          {/* Add Product Button - Mobile */}
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="w-full h-14 bg-blue-600 text-white rounded-xl font-medium flex items-center justify-center gap-3 hover:bg-blue-700 transition-colors"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Añadir producto
+          </button>
+
+          {/* Botón de Recetas IA - Mobile */}
+          <button
+            onClick={() => setCurrentView('recipes')}
+            className="w-full h-14 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium flex items-center justify-center gap-3 hover:from-purple-700 hover:to-pink-700 transition-colors"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            Generar Recetas IA ✨
+          </button>
+
+          {/* Stats Grid - Mobile */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+              <div className="text-xl font-bold text-gray-900 mb-1">{products.length}</div>
+              <div className="text-xs text-gray-500">Total productos</div>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+              <div className="text-xl font-bold text-gray-900 mb-1">{expiringSoon}</div>
+              <div className="text-xs text-gray-500">Caducan pronto</div>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+              <div className="text-xl font-bold text-gray-900 mb-1">47€</div>
+              <div className="text-xs text-gray-500">Ahorrado este mes</div>
+            </div>
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 text-center">
+              <div className="text-xl font-bold text-gray-900 mb-1">2.3kg</div>
+              <div className="text-xs text-gray-500">CO₂ evitado</div>
+            </div>
+          </div>
+
+          {/* Products List - Mobile */}
+          <section>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">Mi nevera</h2>
+              <button className="text-blue-600 font-medium text-sm hover:text-blue-700 transition-colors">
+                Ver todo
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              {products.slice(0, 6).map((product) => {
+                const badge = getExpiryBadge(product.daysLeft);
+                return (
+                  <div key={product.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex justify-between items-center">
+                    <div>
+                      <div className="font-semibold text-gray-900 mb-1">{product.name}</div>
+                      <div className="text-sm text-gray-500">{product.quantity}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`inline-block px-2 py-1 rounded-full text-xs font-semibold mb-1 ${
+                        badge.class === 'urgent' ? 'bg-red-50 text-red-600' :
+                        badge.class === 'warning' ? 'bg-amber-50 text-amber-600' :
+                        'bg-green-50 text-green-600'
+                      }`}>
+                        {badge.text}
+                      </div>
+                      <div className="text-xs text-gray-400">{product.daysLeft} días</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
         </div>
       </main>
 
