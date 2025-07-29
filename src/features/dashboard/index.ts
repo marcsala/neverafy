@@ -4,7 +4,6 @@
 
 // 🎯 Main Components
 export { default as Dashboard } from './components/DashboardRefactored';
-export { default as DashboardLegacy } from '../../../components/Dashboard'; // Temporal para migración
 
 // 🎨 UI Components
 export {
@@ -64,12 +63,15 @@ export {
   calculateDashboardStats,
   validateProductForm,
   getTodayDate,
-  calculateDaysLeft
+  calculateDaysLeft,
+  formatPrice,
+  calculateTotalValue,
+  calculateUrgentValue,
+  estimatePrice
 } from './utils';
 
 // 📝 Constants
 export { MOCK_PRODUCTS } from './utils/mockData';
-export { CLEANUP_CHECKLIST, FILES_TO_REMOVE_LATER, MIGRATION_STATUS } from './utils/cleanup';
 
 // 🎯 Default export - Main Dashboard Component
 export { default } from './components/DashboardRefactored';
