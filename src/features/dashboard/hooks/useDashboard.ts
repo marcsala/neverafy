@@ -1,184 +1,271 @@
-// features/dashboard/hooks/useDashboard.ts
+// =================================
+// Dashboard Main Hook (Refactored)
+// =================================
 
-import { useState, useEffect, useCallback } from 'react';
-import { getDaysToExpiry } from '../../../shared/utils/dateUtils';
-import { useNotifications } from '../../../shared/hooks/useNotifications';
-import { LEVEL_THRESHOLDS } from '../../../shared/utils/constants';
+import { useCallback } from 'react';
+import type { DashboardProps } from '../types';
+import { useProductManagement } from './useProductManagement';
+import { useResponsive } from './useResponsive';
+import { useNotifications } from './useNotifications';
+import { useNavigation } from './useNavigation';
+import { useDashboardAnalytics } from './useDashboardAnalytics';
+import { useLocalState } from './useLocalState';
 
-interface Product {
-  id: string;
-  name: string;
-  expiryDate: string;
-  price?: number;
-}
+export const useDashboard = (userId?: string) => {
+  // Hook para gestión de productos
+  const {
+    products,
+    loading: productsLoading,
+    error: productsError,
+    addProduct,
+    deleteProduct,
+    updateProduct,
+    refreshProducts,
+    clearError: clearProductsError
+  } = useProductManagement({ userId });
 
-interface UserStats {
-  points: number;
-  level: number;
-  streak: number;
-  totalSaved: number;
-  co2Saved: number;
-  ocrUsed: number;
-  recipesGenerated: number;
-}
+  // Hook para responsive
+  const { isMobile, isTablet, isDesktop } = useResponsive();
 
-/**
- * Hook personalizado para manejar la lógica del Dashboard
- */
-export const useDashboard = (products: Product[], consumedProducts: any[], userStats: UserStats) => {
-  const { generateExpiryNotifications } = useNotifications();
+  // Hook para notificaciones
+  const {
+    notification,
+    showNotification,
+    showSuccess,
+    showError,
+    showWarning
+  } = useNotifications();
 
-  // Calcular estadísticas principales
-  const calculateStats = useCallback(() => {
-    const productsArray = Array.isArray(products) ? products : [];
-    
-    const stats = {
-      total: productsArray.length,
-      expiringSoon: productsArray.filter(p => {
-        const days = getDaysToExpiry(p.expiryDate);
-        return days <= 3 && days >= 0;
-      }).length,
-      expired: productsArray.filter(p => getDaysToExpiry(p.expiryDate) < 0).length,
-      totalConsumed: consumedProducts.filter(p => p.wasConsumed).length,
-      totalWasted: consumedProducts.filter(p => !p.wasConsumed).length
-    };
+  // Hook para navegación
+  const {
+    currentView,
+    navigateTo,
+    goBack,
+    goHome,
+    isCurrentView
+  } = useNavigation();
 
-    return stats;
-  }, [products, consumedProducts]);
-
-  // Calcular nivel basado en puntos
-  const calculateLevel = useCallback((points: number) => {
-    let level = 1;
-    
-    for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
-      if (points >= LEVEL_THRESHOLDS[i]) {
-        level = i + 1;
-      } else {
-        break;
-      }
-    }
-    
-    return level;
-  }, []);
-
-  // Obtener productos que necesitan atención urgente
-  const getUrgentProducts = useCallback(() => {
-    const productsArray = Array.isArray(products) ? products : [];
-    
-    return productsArray
-      .filter(p => getDaysToExpiry(p.expiryDate) <= 1)
-      .sort((a, b) => getDaysToExpiry(a.expiryDate) - getDaysToExpiry(b.expiryDate));
-  }, [products]);
-
-  // Calcular ahorro total estimado
-  const calculateTotalSavings = useCallback(() => {
-    const consumedValue = consumedProducts
-      .filter(p => p.wasConsumed)
-      .reduce((total, p) => total + (p.price || 3), 0);
-    
-    const wastedValue = consumedProducts
-      .filter(p => !p.wasConsumed)
-      .reduce((total, p) => total + (p.price || 3), 0);
-
-    return {
-      saved: consumedValue,
-      wasted: wastedValue,
-      total: consumedValue + wastedValue,
-      wastePercentage: consumedValue + wastedValue > 0 ? (wastedValue / (consumedValue + wastedValue)) * 100 : 0
-    };
-  }, [consumedProducts]);
-
-  // Generar recomendaciones personalizadas
-  const generateRecommendations = useCallback(() => {
-    const stats = calculateStats();
-    const urgentProducts = getUrgentProducts();
-    const recommendations: string[] = [];
-
-    if (stats.expiringSoon > 0) {
-      recommendations.push(`Tienes ${stats.expiringSoon} productos que vencen pronto. ¡Genera recetas para aprovecharlos!`);
-    }
-
-    if (stats.expired > 0) {
-      recommendations.push(`Revisa ${stats.expired} productos vencidos en tu nevera.`);
-    }
-
-    if (stats.total === 0) {
-      recommendations.push('Comienza añadiendo productos a tu nevera virtual para empezar a ahorrar.');
-    }
-
-    if (userStats.ocrUsed === 0) {
-      recommendations.push('Prueba la función de cámara inteligente para detectar productos automáticamente.');
-    }
-
-    if (urgentProducts.length > 2) {
-      recommendations.push('Considera usar recetas IA para aprovechar múltiples productos que vencen pronto.');
-    }
-
-    return recommendations;
-  }, [calculateStats, getUrgentProducts, userStats]);
-
-  // Auto-generar notificaciones de vencimiento
-  useEffect(() => {
-    if (products.length > 0) {
-      generateExpiryNotifications(products);
-    }
-  }, [products, generateExpiryNotifications]);
-
-  const stats = calculateStats();
-  const urgentProducts = getUrgentProducts();
-  const savings = calculateTotalSavings();
-  const recommendations = generateRecommendations();
-  const currentLevel = calculateLevel(userStats.points);
-
-  return {
+  // Hook para análisis y estadísticas
+  const {
     stats,
     urgentProducts,
-    savings,
-    recommendations,
-    currentLevel,
-    // Funciones útiles
-    getDaysToExpiry,
-    calculateStats,
-    getUrgentProducts,
-    calculateTotalSavings
+    expiringSoonProducts,
+    freshProducts,
+    expiredProducts,
+    wasteRisk,
+    inventoryHealth,
+    getHealthMessage,
+    getRecommendations,
+    hasUrgentProducts,
+    hasExpiredProducts
+  } = useDashboardAnalytics(products);
+
+  // Hook para estado local
+  const {
+    isModalOpen,
+    isLoading: localLoading,
+    selectedProduct,
+    filters,
+    ui,
+    openModal,
+    closeModal,
+    setLoading: setLocalLoading,
+    selectProduct,
+    setCategory,
+    setUrgentOnly,
+    setSearchTerm,
+    resetFilters
+  } = useLocalState();
+
+  // Combinar estados de loading
+  const loading = productsLoading || localLoading;
+
+  // Combinar errores
+  const error = productsError;
+
+  // Acciones mejoradas con notificaciones
+  const handleAddProduct = useCallback(async (data: any) => {
+    setLocalLoading(true);
+    try {
+      const success = await addProduct(data);
+      if (success) {
+        showSuccess(`${data.name} añadido a tu nevera`);
+        closeModal();
+      } else {
+        showError('Error al añadir producto');
+      }
+    } catch (error) {
+      console.error('Error adding product:', error);
+      showError('Error inesperado al añadir producto');
+    } finally {
+      setLocalLoading(false);
+    }
+  }, [addProduct, setLocalLoading, showSuccess, showError, closeModal]);
+
+  const handleDeleteProduct = useCallback(async (id: number) => {
+    try {
+      const success = await deleteProduct(id);
+      if (success) {
+        showSuccess('Producto eliminado');
+      } else {
+        showError('Error al eliminar producto');
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      showError('Error inesperado al eliminar producto');
+    }
+  }, [deleteProduct, showSuccess, showError]);
+
+  const handleUpdateProduct = useCallback(async (id: number, data: any) => {
+    try {
+      const success = await updateProduct(id, data);
+      if (success) {
+        showSuccess('Producto actualizado');
+      } else {
+        showError('Error al actualizar producto');
+      }
+    } catch (error) {
+      console.error('Error updating product:', error);
+      showError('Error inesperado al actualizar producto');
+    }
+  }, [updateProduct, showSuccess, showError]);
+
+  // Navegación mejorada
+  const handleNavigate = useCallback((view: string) => {
+    navigateTo(view as any);
+  }, [navigateTo]);
+
+  const handleCameraAction = useCallback(() => {
+    showNotification('Funcionalidad de cámara próximamente...');
+  }, [showNotification]);
+
+  // Funciones de utilidad
+  const getFilteredProducts = useCallback(() => {
+    let filtered = [...products];
+
+    // Filtrar por categoría
+    if (filters.category !== 'all') {
+      // Implementar lógica de filtrado por categoría
+      // Por ahora, filtro básico por nombre
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(filters.category.toLowerCase())
+      );
+    }
+
+    // Filtrar solo urgentes
+    if (filters.urgentOnly) {
+      filtered = filtered.filter(p => p.daysLeft < 2);
+    }
+
+    // Filtrar por término de búsqueda
+    if (filters.searchTerm) {
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(filters.searchTerm.toLowerCase())
+      );
+    }
+
+    return filtered;
+  }, [products, filters]);
+
+  const clearAllErrors = useCallback(() => {
+    clearProductsError();
+  }, [clearProductsError]);
+
+  return {
+    // Estado principal
+    products: getFilteredProducts(),
+    allProducts: products, // Productos sin filtrar
+    loading,
+    error,
+    
+    // Estado de navegación
+    currentView,
+    
+    // Estado responsive
+    isMobile,
+    isTablet,
+    isDesktop,
+    
+    // Estado de UI
+    isModalOpen,
+    selectedProduct,
+    filters,
+    ui,
+    
+    // Notificaciones
+    notification,
+    
+    // Análisis y estadísticas
+    stats,
+    urgentProducts,
+    expiringSoonProducts,
+    freshProducts,
+    expiredProducts,
+    wasteRisk,
+    inventoryHealth,
+    hasUrgentProducts,
+    hasExpiredProducts,
+    
+    // Acciones de productos
+    addProduct: handleAddProduct,
+    deleteProduct: handleDeleteProduct,
+    updateProduct: handleUpdateProduct,
+    refreshProducts,
+    
+    // Acciones de navegación
+    navigateTo: handleNavigate,
+    goBack,
+    goHome,
+    isCurrentView,
+    
+    // Acciones de UI
+    openModal,
+    closeModal,
+    selectProduct,
+    
+    // Acciones de filtros
+    setCategory,
+    setUrgentOnly,
+    setSearchTerm,
+    resetFilters,
+    
+    // Acciones de notificaciones
+    showNotification,
+    showSuccess,
+    showError,
+    showWarning,
+    
+    // Utilidades
+    getHealthMessage,
+    getRecommendations,
+    clearAllErrors,
+    handleCameraAction,
+    
+    // Funciones específicas para componentes
+    setCurrentView: navigateTo,
+    onNotificationClick: handleCameraAction
   };
 };
 
-/**
- * Hook para manejar acciones del dashboard
- */
-export const useDashboardActions = () => {
-  const [currentView, setCurrentView] = useState('dashboard');
-
-  const navigateTo = useCallback((view: string) => {
-    setCurrentView(view);
-  }, []);
-
-  const handleQuickAction = useCallback((action: string, data?: any) => {
-    switch (action) {
-      case 'add-product':
-        navigateTo('products');
-        break;
-      case 'scan-product':
-        navigateTo('camera');
-        break;
-      case 'generate-recipes':
-        navigateTo('recipes');
-        break;
-      case 'view-analytics':
-        navigateTo('analytics');
-        break;
-      case 'check-achievements':
-        navigateTo('achievements');
-        break;
-      default:
-        console.warn(`Acción no reconocida: ${action}`);
-    }
-  }, [navigateTo]);
+// Hook simplificado para casos básicos
+export const useSimpleDashboard = (userId?: string) => {
+  const { products, loading, addProduct } = useProductManagement({ userId });
+  const { isMobile } = useResponsive();
+  const { notification, showNotification } = useNotifications();
+  const { currentView, navigateTo } = useNavigation();
+  const { isModalOpen, openModal, closeModal } = useLocalState();
 
   return {
+    products,
+    loading,
+    isMobile,
     currentView,
+    isModalOpen,
+    notification,
+    addProduct,
     navigateTo,
-    handleQuickAction
+    openModal,
+    closeModal,
+    showNotification
   };
 };
