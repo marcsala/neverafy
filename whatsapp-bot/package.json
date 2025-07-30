@@ -1,0 +1,49 @@
+{
+  "name": "neverafy-whatsapp-bot",
+  "version": "1.5.0",
+  "description": "Bot de WhatsApp para Neverafy - Gestión inteligente de nevera con monetización",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "vercel-build": "npm run build",
+    "test": "echo \"Tests coming in Phase 7\" && exit 0",
+    "deploy": "vercel --prod",
+    "logs": "tail -f logs/combined.log",
+    "db:setup": "echo \"Run SQL migrations in sql/ directory\"",
+    "cron:test": "curl -X POST http://localhost:3000/api/cron/subscription-management"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "neverafy",
+    "food-management",
+    "expiry-alerts",
+    "payments",
+    "subscription",
+    "bizum"
+  ],
+  "author": "Neverafy Team",
+  "license": "MIT",
+  "dependencies": {
+    "fastify": "^4.24.3",
+    "@fastify/cors": "^8.4.0",
+    "@fastify/formbody": "^7.4.0",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.1",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0",
+    "@supabase/supabase-js": "^2.38.4",
+    "@anthropic-ai/sdk": "^0.9.1",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "@types/winston": "^2.4.4",
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
