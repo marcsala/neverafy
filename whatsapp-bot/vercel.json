@@ -5,9 +5,6 @@
     "src/api/webhooks/bizum.ts": { "maxDuration": 30 },
     "src/api/cron/*.ts": { "maxDuration": 300 }
   },
-  "routes": [
-    { "src": "/(.*)", "dest": "src/server.ts" }
-  ],
   "crons": [
     {
       "path": "/api/cron/daily-alerts",
