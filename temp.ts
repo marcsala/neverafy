@@ -80,7 +80,7 @@ export class MessageHandler {
 
       // Detect intent and handle accordingly
       const intent = await this.intentService.detectIntent(normalizedMessage);
-      
+
       switch (intent.type) {
         case 'greeting':
           await this.handleGreeting(user);
@@ -139,7 +139,7 @@ export class MessageHandler {
       message += `¡Así podré ayudarte a reducir el desperdicio! 🌱`;
     } else {
       message += `📦 Tienes **${products.length} productos** en tu nevera.\n`;
-      
+
       if (urgent.length > 0) {
         message += `🚨 **${urgent.length} urgentes** - caducan pronto\n\n`;
         message += `💡 Escribe "urgente" para verlos\n`;
@@ -169,7 +169,7 @@ export class MessageHandler {
         await this.handleRecipeFollowup(user, message, context);
         break;
     }
-    
+
     // Limpiar contexto después de manejar
     await this.conversationService.clearContext(user.id);
   }
@@ -178,7 +178,7 @@ export class MessageHandler {
     // Intentar parsear de nuevo con el mensaje clarificado
     try {
       const product = await this.productsService.addProductByText(user.user_id, message);
-      
+
       if (product) {
         await this.whatsappService.sendMessage(
           user.phone_number,
@@ -211,7 +211,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
   private async handleRemovalConfirmation(user: any, message: string, context: any): Promise<void> {
     const matches = context.context_data.matches;
     const selection = parseInt(message.trim());
-    
+
     if (isNaN(selection) || selection < 1 || selection > matches.length) {
       await this.whatsappService.sendMessage(
         user.phone_number,
@@ -223,7 +223,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
     try {
       const selectedProduct = matches[selection - 1];
       await this.productsService.removeProduct(selectedProduct.id);
-      
+
       await this.whatsappService.sendMessage(
         user.phone_number,
         `✅ *${selectedProduct.name}* eliminado correctamente.
@@ -242,11 +242,11 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
     if (message.toLowerCase().includes('sí') || message.toLowerCase().includes('si')) {
       // Usuario quiere la receta, verificar premium
       const subscription = await this.paymentsService.checkSubscriptionStatus(user.user_id);
-      
+
       if (subscription.isActive) {
         const products = context.context_data.products;
         const fullRecipe = await this.aiService.generateDetailedRecipe(products);
-        
+
         await this.whatsappService.sendMessage(user.phone_number, fullRecipe);
       } else {
         await this.handlePremiumInfo(user);
@@ -271,13 +271,13 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
     const d = new Date(date);
     const now = new Date();
     const diffDays = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return 'Hoy';
     if (diffDays === 1) return 'Mañana';
     if (diffDays === -1) return 'Ayer';
     if (diffDays > 0 && diffDays <= 7) return `En ${diffDays} días`;
     if (diffDays < 0 && diffDays >= -7) return `Hace ${Math.abs(diffDays)} días`;
-    
+
     return d.toLocaleDateString('es-ES', {
       weekday: 'short',
       month: 'short',
@@ -291,12 +291,12 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
 
   private async handleError(phoneNumber: string, error: any): Promise<void> {
     logger.error('Message handler error:', error);
-    
+
     await this.whatsappService.sendMessage(
       phoneNumber,
       "❌ Ups, algo salió mal. Por favor inténtalo de nuevo en unos momentos."
     );
-    
+
     // Log error para debugging
     await this.metricsService.trackError(phoneNumber, error.message || 'Unknown error');
   }
@@ -310,7 +310,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
       }
 
       const product = await this.productsService.addProductByText(user.user_id, message);
-      
+
       if (product) {
         await this.whatsappService.sendMessage(
           user.phone_number,
@@ -370,7 +370,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
       }
 
       const subscription = await this.paymentsService.checkSubscriptionStatus(user.user_id);
-      
+
       if (ingredients && ingredients.length > 0) {
         // User specified ingredients
         const recipe = await this.aiService.generateQuickRecipe(ingredients);
@@ -378,7 +378,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
       } else {
         // Use user's products
         const products = await this.productsService.getUserProducts(user.user_id);
-        
+
         if (products.length === 0) {
           await this.whatsappService.sendMessage(
             user.phone_number,
@@ -394,7 +394,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
 
         const urgent = products.filter(p => p.daysLeft <= 3);
         const recipeProducts = urgent.length >= 2 ? urgent : products.slice(0, 5);
-        
+
         if (subscription.isActive && subscription.tier === 'premium') {
           // Premium: receta completa y detallada
           const fullRecipe = await this.aiService.generateDetailedRecipe(recipeProducts);
@@ -404,16 +404,16 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
           const basicRecipe = await this.aiService.generateQuickRecipe(
             recipeProducts.map(p => p.name)
           );
-          
+
           await this.whatsappService.sendMessage(user.phone_number, basicRecipe);
-          
+
           // Set context for potential upsell
           await this.conversationService.setContext(user.id, {
             pending_action: 'recipe_followup',
             context_data: { products: recipeProducts },
             expires_at: new Date(Date.now() + 5 * 60 * 1000)
           });
-          
+
           await this.whatsappService.sendMessage(
             user.phone_number,
             `💡 ¿Quieres la versión completa con pasos detallados, tiempos y tips profesionales?`
@@ -430,7 +430,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
 
   private async handlePremiumInfo(user: any): Promise<void> {
     const subscription = await this.paymentsService.checkSubscriptionStatus(user.user_id);
-    
+
     if (subscription.isActive) {
       let message = `⭐ **¡Eres Premium!** ✨
 
@@ -452,12 +452,12 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
 
 `;
       message += `¡Disfruta de todas las funciones! 🎉`;
-      
+
       await this.whatsappService.sendMessage(user.phone_number, message);
     } else {
       const usageStats = await this.limitsService.getUsageStats(user.user_id);
       const userCode = this.generateUserCode(user.user_id);
-      
+
       let message = `⭐ **Upgrade a Premium** 🚀
 
 `;
@@ -474,11 +474,11 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
       message += `• 🎨 **Funciones exclusivas**
 
 `;
-      
+
       if (usageStats) {
         const dailyPercent = Math.round((usageStats.daily.used / usageStats.daily.limit) * 100);
         const weeklyPercent = Math.round((usageStats.weekly.used / usageStats.weekly.limit) * 100);
-        
+
         message += `📈 **Tu uso actual:**
 `;
         message += `• Diario: ${usageStats.daily.used}/${usageStats.daily.limit} (${dailyPercent}%)
@@ -487,16 +487,16 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
 
 `;
       }
-      
+
       message += `💳 **Solo €4.99/mes**
 `;
       message += `🔒 **Código:** ${userCode}
 
 `;
       message += `💬 **Activar:** Envía "PREMIUM ${userCode}" por Bizum al 123456789`;
-      
+
       await this.whatsappService.sendMessage(user.phone_number, message);
-      
+
       // Schedule follow-up upsell if they're near limits
       await this.paymentsService.scheduleUpsellFollowup(user.user_id);
     }
@@ -533,7 +533,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
 
   private async handleUsageStats(user: any): Promise<void> {
     const usageStats = await this.limitsService.getUsageStats(user.user_id);
-    
+
     if (usageStats) {
       const dailyPercent = Math.round((usageStats.daily.used / usageStats.daily.limit) * 100);
       const weeklyPercent = Math.round((usageStats.weekly.used / usageStats.weekly.limit) * 100);
@@ -549,7 +549,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
       message += `${usageStats.daily.remaining} restantes
 
 `;
-      
+
       message += `📦 **Productos semanales:**
 `;
       message += `${usageStats.weekly.used}/${usageStats.weekly.limit} (${weeklyPercent}%)
@@ -557,7 +557,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
       message += `${usageStats.weekly.remaining} restantes
 
 `;
-      
+
       message += `🤖 **IA mensual:**
 `;
       message += `${usageStats.monthly.used}/${usageStats.monthly.limit} (${monthlyPercent}%)
@@ -577,7 +577,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
       }
 
       await this.whatsappService.sendMessage(user.phone_number, message);
-    } else {.
+    } else {
       await this.whatsappService.sendMessage(
         user.phone_number,
         "❌ No pude cargar tus estadísticas. Inténtalo más tarde."
@@ -588,7 +588,7 @@ Ejemplo: "Yogur natural que caduca mañana, 1.50€"`
   private async handleListProducts(user: any): Promise<void> {
     try {
       const products = await this.productsService.getUserProducts(user.user_id);
-      
+
       if (products.length === 0) {
         await this.whatsappService.sendMessage(
           user.phone_number,
@@ -606,11 +606,11 @@ Para empezar, añade productos:
 
       // Ordenar por fecha de caducidad
       const sortedProducts = products.sort((a, b) => a.daysLeft - b.daysLeft);
-      
+
       let message = `📦 *Tu nevera (${products.length} productos)*
 
 `;
-      
+
       // Productos urgentes primero
       const urgent = sortedProducts.filter(p => p.daysLeft <= 2);
       const soon = sortedProducts.filter(p => p.daysLeft > 2 && p.daysLeft <= 7);
@@ -670,7 +670,7 @@ Para empezar, añade productos:
       }
 
       await this.whatsappService.sendMessage(user.phone_number, message);
-      
+
     } catch (error) {
       await this.whatsappService.sendMessage(
         user.phone_number,
@@ -683,14 +683,14 @@ Para empezar, añade productos:
     try {
       const products = await this.productsService.getUserProducts(user.user_id);
       const urgent = products.filter(p => p.daysLeft <= 2);
-      
+
       if (urgent.length === 0) {
         await this.whatsappService.sendMessage(
           user.phone_number,
           `✅ *¡Perfecto!* No tienes productos urgentes.
 
 🎯 Productos que caducan pronto:
-${products.filter(p => p.daysLeft <= 7).map(p => 
+${products.filter(p => p.daysLeft <= 7).map(p =>
   `• ${p.name} - ${p.daysLeft} días`
 ).join('
 ') || 'Ninguno'}
@@ -701,11 +701,11 @@ ${products.filter(p => p.daysLeft <= 7).map(p =>
       }
 
       const totalUrgentValue = urgent.reduce((sum, p) => sum + (p.price || 0), 0);
-      
+
       let message = `🚨 *PRODUCTOS URGENTES (${urgent.length})*
 
 `;
-      
+
       urgent.forEach(p => {
         const daysText = p.daysLeft === 0 ? '¡HOY!' : p.daysLeft === 1 ? 'MAÑANA' : `${p.daysLeft} días`;
         message += `• *${p.name}* - Caduca ${daysText}
@@ -718,7 +718,7 @@ ${products.filter(p => p.daysLeft <= 7).map(p =>
       message += `💸 *Valor en riesgo: ${totalUrgentValue.toFixed(2)}€*
 
 `;
-      
+
       message += `💡 *Sugerencias:*
 `;
       message += `• Cocina algo con estos ingredientes
@@ -728,11 +728,11 @@ ${products.filter(p => p.daysLeft <= 7).map(p =>
       message += `• Compártelos con amigos/familia
 
 `;
-      
+
       message += `👨‍🍳 ¿Quieres una receta personalizada?`;
 
       await this.whatsappService.sendMessage(user.phone_number, message);
-      
+
     } catch (error) {
       await this.whatsappService.sendMessage(
         user.phone_number,
@@ -749,7 +749,7 @@ ${products.filter(p => p.daysLeft <= 7).map(p =>
     try {
       const products = await this.productsService.getUserProducts(user.user_id);
       const matches = await this.productsService.findProductMatches(user.user_id, productName);
-      
+
       if (matches.length === 0) {
         await this.whatsappService.sendMessage(
           user.phone_number,
@@ -768,7 +768,7 @@ ${products.length > 5 ? `... y ${products.length - 5} más` : ''}
       if (matches.length === 1) {
         // Un solo resultado, eliminar directamente
         await this.productsService.removeProduct(matches[0].id);
-        
+
         await this.whatsappService.sendMessage(
           user.phone_number,
           `✅ *${matches[0].name}* eliminado de tu nevera.
@@ -797,7 +797,7 @@ Responde con el número del producto a eliminar:`;
 
         await this.whatsappService.sendMessage(user.phone_number, message);
       }
-      
+
     } catch (error) {
       await this.whatsappService.sendMessage(
         user.phone_number,
@@ -810,7 +810,7 @@ Responde con el número del producto a eliminar:`;
     try {
       const products = await this.productsService.getUserProducts(user.user_id);
       const subscription = await this.paymentsService.checkSubscriptionStatus(user.user_id);
-      
+
       if (products.length === 0) {
         await this.whatsappService.sendMessage(
           user.phone_number,
@@ -827,13 +827,13 @@ Responde con el número del producto a eliminar:`;
       const totalValue = products.reduce((sum, p) => sum + (p.price || 0), 0);
       const urgent = products.filter(p => p.daysLeft <= 2);
       const avgDaysLeft = products.reduce((sum, p) => sum + p.daysLeft, 0) / products.length;
-      
+
       // Estadísticas por categoría
       const categories = products.reduce((acc: any, p) => {
         acc[p.category] = (acc[p.category] || 0) + 1;
         return acc;
       }, {});
-      
+
       const topCategory = Object.entries<number>(categories)
         .sort(([,a], [,b]) => b - a)[0];
 
@@ -856,7 +856,7 @@ Responde con el número del producto a eliminar:`;
         // Estadísticas premium adicionales
         const weeklyTrend = await this.productsService.getWeeklyTrend(user.user_id);
         const wasteEstimate = await this.productsService.getWasteEstimate(user.user_id);
-        
+
         message += `📈 *Analytics Premium:*
 `;
         message += `📊 Tendencia semanal: ${weeklyTrend > 0 ? '+' : ''}${weeklyTrend} productos
@@ -870,7 +870,7 @@ Responde con el número del producto a eliminar:`;
       }
 
       await this.whatsappService.sendMessage(user.phone_number, message);
-      
+
     } catch (error) {
       await this.whatsappService.sendMessage(
         user.phone_number,
@@ -886,7 +886,7 @@ Responde con el número del producto a eliminar:`;
     let message = `🤖 *Ayuda - Neverafy Bot*
 
 `;
-    
+
     message += `📝 *Comandos principales:*
 `;
     message += `• "Tengo [producto]" - Añadir producto
@@ -904,7 +904,7 @@ Responde con el número del producto a eliminar:`;
     message += `• "Uso" - Ver límites actuales
 
 `;
-    
+
     message += `💡 *Ejemplos de uso:*
 `;
     message += `• "Compré leche que caduca el viernes"
