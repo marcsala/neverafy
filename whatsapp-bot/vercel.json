@@ -1,31 +1,7 @@
 {
   "version": 2,
-  "functions": {
-    "src/server.ts": { "maxDuration": 30 },
-    "src/api/webhooks/bizum.ts": { "maxDuration": 30 },
-    "src/api/cron/*.ts": { "maxDuration": 300 }
-  },
-  "crons": [
-    {
-      "path": "/api/cron/daily-alerts",
-      "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/cron/urgent-check", 
-      "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/cron/weekly-reports",
-      "schedule": "0 10 * * 0"
-    },
-    {
-      "path": "/api/cron/subscription-management",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/smart-engagement",
-      "schedule": "0 15 * * *"
-    }
+  "builds": [
+    { "src": "src/server.ts", "use": "@vercel/node" }
   ],
   "headers": [
     {
