@@ -1,31 +1,13 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "src/server.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["src/**"]
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/server.ts"
-    }
-  ],
   "functions": {
-    "src/server.ts": {
-      "maxDuration": 30
-    },
-    "src/api/webhooks/bizum.ts": {
-      "maxDuration": 30
-    },
-    "src/api/cron/*.ts": {
-      "maxDuration": 300
-    }
+    "src/server.ts": { "maxDuration": 30 },
+    "src/api/webhooks/bizum.ts": { "maxDuration": 30 },
+    "src/api/cron/*.ts": { "maxDuration": 300 }
   },
+  "routes": [
+    { "src": "/(.*)", "dest": "src/server.ts" }
+  ],
   "crons": [
     {
       "path": "/api/cron/daily-alerts",
