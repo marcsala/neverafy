@@ -15,7 +15,7 @@
     },
     {
       "path": "/api/cron/urgent-check", 
-      "schedule": "0 */4 * * *"
+      "schedule": "0 12 * * *"
     },
     {
       "path": "/api/cron/weekly-reports",
@@ -27,7 +27,7 @@
     },
     {
       "path": "/api/cron/smart-engagement",
-      "schedule": "0 10,16 * * *"
+      "schedule": "0 15 * * *"
     }
   ],
   "headers": [
