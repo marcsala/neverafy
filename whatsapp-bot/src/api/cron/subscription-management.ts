@@ -167,7 +167,7 @@ async function processScheduledMessages(whatsappService: WhatsAppService) {
         .from('scheduled_messages')
         .update({
           status: 'failed',
-          error_message: error.message
+          error_message: error instanceof Error ? error.message : 'Unknown error'
         })
         .eq('id', message.id);
     }

@@ -41,8 +41,7 @@ export class MessageHandler {
     this.aiService = aiService;
     this.metricsService = metricsService;
     this.intentService = intentService;
-}
-
+  }
 
   async handleMessage(phoneNumber: string, message: string): Promise<void> {
     try {
@@ -627,8 +626,8 @@ Para empezar, añade productos:
           message += `... y ${urgent.length - 5} más urgentes
 `;
         }
-        message += '
-';
+        message += `
+`;
       }
 
       if (soon.length > 0) {
@@ -642,8 +641,8 @@ Para empezar, añade productos:
           message += `... y ${soon.length - 3} más
 `;
         }
-        message += '
-';
+        message += `
+`;
       }
 
       if (fresh.length > 0) {
@@ -692,8 +691,8 @@ Para empezar, añade productos:
 🎯 Productos que caducan pronto:
 ${products.filter(p => p.daysLeft <= 7).map(p => 
   `• ${p.name} - ${p.daysLeft} días`
-).join('
-') || 'Ninguno'}
+).join(`
+`) || 'Ninguno'}
 
 ¡Tienes todo bajo control! 👍`
         );
@@ -756,8 +755,8 @@ ${products.filter(p => p.daysLeft <= 7).map(p =>
           `❓ No encontré "${productName}" en tu nevera.
 
 📦 *Productos disponibles:*
-${products.slice(0, 5).map(p => `• ${p.name}`).join('
-')}
+${products.slice(0, 5).map(p => `• ${p.name}`).join(`
+`)}
 ${products.length > 5 ? `... y ${products.length - 5} más` : ''}
 
 ¿Puedes ser más específico?`

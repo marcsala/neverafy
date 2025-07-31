@@ -8,7 +8,13 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "node server.js"
+    "server": "node server.js",
+    "verify-config": "bash verify-config.sh",
+    "setup": "npm install && bash verify-config.sh",
+    "start": "npm run verify-config && npm run dev",
+    "deploy-check": "npm run verify-config && npm run build",
+    "deploy": "bash deploy-complete.sh",
+    "test-email": "node test-email-node.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.52.0",
@@ -20,6 +26,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.7.0",
+    "resend": "^4.0.1",
     "zustand": "^5.0.6"
   },
   "devDependencies": {

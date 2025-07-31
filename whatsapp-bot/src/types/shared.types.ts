@@ -44,9 +44,11 @@ export interface ConversationContext {
   last_intent?: string;
   pending_action?: string;
   context_data?: any;
-  expires_at: string;
+  expires_at: string | Date; // Allow both string and Date
   created_at: string;
 }
+
+export type LimitAction = 'add_product' | 'remove_product' | 'ai_request' | 'ai_query' | 'daily_message' | 'recipe_request';
 
 export interface ParsedProduct {
   name: string | null;

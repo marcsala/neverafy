@@ -17,6 +17,7 @@ import type { DashboardProps } from '../types';
 import FridgeView from '../../../components/FridgeView';
 import ProfileView from '../../../components/ProfileView';
 import RecipesIntegration from '../../../components/RecipesIntegration';
+import DirectEmailTester from '../../../components/DirectEmailTester';
 
 const Dashboard: React.FC<DashboardProps> = ({
   userName = 'Usuario',
@@ -156,6 +157,14 @@ const Dashboard: React.FC<DashboardProps> = ({
               isMobile={isMobile}
               variant={isMobile ? 'compact' : 'sidebar'}
             />
+
+            {/* Test de Emails - Solo en desarrollo para el admin */}
+            {(process.env.NODE_ENV === 'development' || userName === 'marcsala') && (
+              <DirectEmailTester
+                userEmail="marcsala@me.com"
+                userName={userName}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -56,6 +56,34 @@ const fastify = Fastify({
   logger: false // Usamos winston en su lugar
 });
 
+// Wrapper function para convertir handlers Web API a Fastify
+function wrapWebAPIHandler(handler: (req: Request) => Promise<Response>) {
+  return async (request: any, reply: any) => {
+    try {
+      // Crear un objeto Request-like para el handler
+      const webRequest = {
+        method: request.method,
+        url: request.url,
+        headers: request.headers,
+        json: () => Promise.resolve(request.body),
+        text: () => Promise.resolve(JSON.stringify(request.body))
+      } as Request;
+
+      // Llamar al handler original
+      const response = await handler(webRequest);
+      
+      // Convertir Response a FastifyReply
+      const text = await response.text();
+      reply.status(response.status).send(text);
+      
+    } catch (error: unknown) {
+      logger.error('Handler error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      reply.status(500).send({ error: errorMessage });
+    }
+  };
+}
+
 // Registrar plugins
 async function setupServer() {
   try {
@@ -136,17 +164,17 @@ async function setupServer() {
     // Webhook de WhatsApp - POST para mensajes
     fastify.post('/api/webhook', webhookHandler);
 
-    // Webhook de Bizum - POST para pagos
-    fastify.post('/api/webhooks/bizum', bizumWebhookHandler);
+    // Webhook de Bizum - POST para pagos (wrapped)
+    fastify.post('/api/webhooks/bizum', wrapWebAPIHandler(bizumWebhookHandler));
 
     // Cron Jobs para alertas automáticas (Fase 4)
     fastify.post('/api/cron/daily-alerts', dailyAlertsHandler);
     fastify.post('/api/cron/urgent-check', urgentCheckHandler);
     fastify.post('/api/cron/weekly-reports', weeklyReportsHandler);
 
-    // Cron Jobs para monetización (Fase 5)
-    fastify.post('/api/cron/subscription-management', subscriptionManagementHandler);
-    fastify.post('/api/cron/smart-engagement', smartEngagementHandler);
+    // Cron Jobs para monetización (Fase 5) - wrapped
+    fastify.post('/api/cron/subscription-management', wrapWebAPIHandler(subscriptionManagementHandler));
+    fastify.post('/api/cron/smart-engagement', wrapWebAPIHandler(smartEngagementHandler));
 
     // Endpoint de testing para desarrollo
     if (process.env.NODE_ENV !== 'production') {
@@ -164,21 +192,27 @@ async function setupServer() {
 
         try {
           // Simular webhook interno
-          const response = await bizumWebhookHandler({
+          const mockRequest = {
             method: 'POST',
             json: () => Promise.resolve(testPayload)
-          } as any);
+          } as Request;
+
+          const response = await bizumWebhookHandler(mockRequest);
+          const responseText = await response.text();
 
           return {
-            success: true,
+            success: response.ok,
+            status: response.status,
             message: 'Payment simulation completed',
+            response: responseText,
             payload: testPayload
           };
-        } catch (error) {
+        } catch (error: unknown) {
           logger.error('Payment simulation error:', error);
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
           return {
             success: false,
-            error: error.message,
+            error: errorMessage,
             payload: testPayload
           };
         }
@@ -192,9 +226,10 @@ async function setupServer() {
           
           const metrics = await metricsService.getCurrentMetrics();
           return metrics;
-        } catch (error) {
+        } catch (error: unknown) {
           logger.error('Metrics error:', error);
-          return { error: 'Failed to load metrics' };
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          return { error: 'Failed to load metrics', details: errorMessage };
         }
       });
     }

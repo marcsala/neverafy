@@ -15,36 +15,31 @@ Neverafy es una aplicación inteligente que te ayuda a gestionar tu nevera, ahor
 
 ## 🚀 Inicio Rápido
 
-### Prerequisitos
+### ⚡ Setup en 5 minutos
+
+```bash
+# 1. Clonar e instalar
+git clone https://github.com/marcsala/neverafy.git
+cd neverafy
+npm run setup
+
+# 2. Configurar variables (ver SETUP_RAPIDO.md)
+cp .env.example .env.local
+# Editar .env.local con tus credenciales
+
+# 3. Ejecutar
+npm run start
+```
+
+### 📋 Prerequisitos
 
 - Node.js 18+ instalado
-- Cuenta en Supabase
-- API Key de Claude (Anthropic)
+- Cuenta en [Supabase](https://supabase.com) (gratis)
+- API Key de [Claude](https://console.anthropic.com) (~$5/mes)
 
-### Instalación
+### 🔧 Configuración Detallada
 
-1. **Clona el repositorio**
-   ```bash
-   git clone https://github.com/marcsala/neverafy.git
-   cd neverafy
-   ```
-
-2. **Instala las dependencias**
-   ```bash
-   npm install
-   ```
-
-3. **Configura las variables de entorno**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Edita `.env.local` con tus credenciales:
-   ```env
-   REACT_APP_SUPABASE_URL=tu_url_de_supabase
-   REACT_APP_SUPABASE_ANON_KEY=tu_clave_de_supabase
-   CLAUDE_API_KEY=tu_clave_de_claude
-   ```
+Sigue la guía completa en → **[SETUP_RAPIDO.md](./SETUP_RAPIDO.md)**
 
 4. **Configura la base de datos en Supabase**
    
