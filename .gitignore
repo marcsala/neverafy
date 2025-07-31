@@ -16,6 +16,7 @@ dist/
 
 # Secrets cleanup files
 secrets.txt
+VARIABLES_REALES.txt
 
 # Logs
 npm-debug.log*

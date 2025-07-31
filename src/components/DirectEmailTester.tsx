@@ -149,7 +149,7 @@ const DirectEmailTester = ({ userEmail, userName }) => {
       addLog('📄 HTML generado correctamente', 'info');
 
       // API Key hardcodeada para test (normalmente sería mala práctica, pero es solo para debugging)
-      const RESEND_API_KEY = 're_f5mxJt2Y_NEz8rAhC9MPjLRKdAztyBMR5';
+      const RESEND_API_KEY = 're_[TU_API_KEY_AQUI]';
       
       addLog('🔑 Usando API key configurada', 'info');
 

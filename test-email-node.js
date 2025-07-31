@@ -6,7 +6,7 @@
 const fetch = require('node-fetch');
 
 async function testEmail() {
-  const RESEND_API_KEY = 're_f5mxJt2Y_NEz8rAhC9MPjLRKdAztyBMR5';
+  const RESEND_API_KEY = 're_[CAMBIAR_POR_TU_API_KEY]';
   const EMAIL_DESTINO = 'marcsala@me.com';
   
   console.log('🚀 Probando email desde Node.js...');
