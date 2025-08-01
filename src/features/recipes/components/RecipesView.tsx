@@ -273,15 +273,16 @@ const RecipesView: React.FC<RecipesViewProps> = ({
                 </div>
               </div>
 
-              {onUpgradeToPremium && (
-                <Button
-                  onClick={onUpgradeToPremium}
-                  variant="premium"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  Ver Premium
-                </Button>
-              )}
+              {/* 🍋 BOTÓN DIRECTO LEMONSQUEEZY */}
+              <a 
+                href="https://neverafy.lemonsqueezy.com/buy/0d8fe582-01f6-4766-9075-44bbf46780e4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105"
+              >
+                <Sparkles className="w-4 h-4" />
+                Ver Premium
+              </a>
             </div>
           </div>
         </div>

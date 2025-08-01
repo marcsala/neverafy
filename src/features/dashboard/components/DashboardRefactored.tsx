@@ -122,6 +122,31 @@ const Dashboard: React.FC<DashboardProps> = ({
         <div className={isMobile ? 'space-y-6' : 'grid lg:grid-cols-3 gap-6'}>
           {/* Columna principal */}
           <div className={isMobile ? 'space-y-6' : 'lg:col-span-2 space-y-6'}>
+            {/* 🍋 BANNER PREMIUM */}
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732L14.146 12.8l-1.179 4.456a1 1 0 01-1.934 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732L9.854 7.2l1.179-4.456A1 1 0 0112 2z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Desbloquea Neverafy Premium</h3>
+                    <p className="text-sm text-gray-600">Recetas con IA, alertas inteligentes y más</p>
+                  </div>
+                </div>
+                <a
+                  href="https://neverafy.lemonsqueezy.com/buy/0d8fe582-01f6-4766-9075-44bbf46780e4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 transform hover:scale-105"
+                >
+                  Ver Planes
+                </a>
+              </div>
+            </div>
+
             {/* Alertas urgentes */}
             {hasUrgentProducts && (
               <UrgentAlerts
