@@ -1,6 +1,6 @@
 // ===============================================
-// EMAIL SERVICE - NEVERAFY
-// Sistema completo de notificaciones por email
+// EMAIL TEMPLATE - ESTILO LANDING NEVERAFY
+// Plantilla que coincide con el diseño de la landing page
 // ===============================================
 
 // Helper functions
@@ -18,49 +18,34 @@ const getMonthName = (monthIndex) => {
   return months[monthIndex];
 };
 
-const getCategoryEmoji = (category) => {
-  const emojis = {
-    'frutas': '🍌',
-    'verduras': '🥬',
-    'lácteos': '🥛',
-    'carne': '🥩',
-    'pescado': '🐟',
-    'pan': '🍞',
-    'conservas': '🥫',
-    'congelados': '🧊',
-    'huevos': '🥚',
-    'otros': '📦'
-  };
-  return emojis[category.toLowerCase()] || '📦';
-};
-
-// Plantilla de email profesional con diseño responsive
+// Plantilla de email con estilo de la landing
 export const createEmailTemplate = (data) => {
   const { userName, products, userStats, appUrl, unsubscribeUrl } = data;
   
   // Generar HTML de productos dinámicamente
   const productsHtml = products.map(product => {
     const daysToExpiry = getDaysToExpiry(product.expiry_date);
-    let expiryText, expiryClass;
+    let expiryText, expiryClass, productClass;
     
     if (daysToExpiry <= 0) {
-      expiryText = '¡HOY! 🚨';
+      expiryText = 'VENCE HOY';
       expiryClass = 'expiry-today';
+      productClass = 'urgent';
     } else if (daysToExpiry === 1) {
-      expiryText = 'MAÑANA ⚠️';
-      expiryClass = '';
+      expiryText = 'VENCE MAÑANA';
+      expiryClass = 'expiry-tomorrow';
+      productClass = 'warning';
     } else {
       const date = new Date(product.expiry_date);
-      expiryText = `${date.getDate()} ${getMonthName(date.getMonth())} ⏰`;
-      expiryClass = '';
+      expiryText = `${date.getDate()} ${getMonthName(date.getMonth())}`;
+      expiryClass = 'expiry-soon';
+      productClass = '';
     }
     
-    const categoryEmoji = getCategoryEmoji(product.category);
-    
     return `
-      <div class="product-item">
+      <div class="product-item ${productClass}">
         <div class="product-info">
-          <div class="product-name">${categoryEmoji} ${product.name}</div>
+          <div class="product-name">${product.name}</div>
           <div class="product-category">${product.category} • Cantidad: ${product.quantity || 1}</div>
         </div>
         <div class="expiry-badge ${expiryClass}">${expiryText}</div>
@@ -84,8 +69,8 @@ export const createEmailTemplate = (data) => {
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6; 
-            color: #333;
-            background-color: #f8fafc;
+            color: #374151;
+            background-color: #f9fafb;
         }
         
         .email-container { 
@@ -94,125 +79,152 @@ export const createEmailTemplate = (data) => {
             background: #ffffff;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
         
         .header { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);
             color: white; 
-            padding: 40px 30px; 
+            padding: 40px 32px; 
             text-align: center; 
         }
         
-        .logo { 
-            font-size: 2.5rem; 
-            margin-bottom: 8px;
+        .header-logo { 
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
         }
         
         .header h1 { 
-            font-size: 1.8rem; 
+            font-size: 24px; 
             font-weight: 700; 
             margin-bottom: 8px;
         }
         
         .header p { 
-            font-size: 1.1rem; 
+            font-size: 16px; 
             opacity: 0.9;
+            font-weight: 400;
         }
         
         .content { 
-            padding: 40px 30px; 
+            padding: 40px 32px; 
             background: #ffffff;
         }
         
         .greeting { 
-            font-size: 1.3rem; 
-            font-weight: 600; 
-            color: #1a202c;
-            margin-bottom: 24px;
+            font-size: 24px; 
+            font-weight: 700; 
+            color: #111827;
+            margin-bottom: 20px;
         }
         
         .intro-text { 
-            font-size: 1.1rem; 
-            color: #4a5568; 
+            font-size: 18px; 
+            color: #4b5563; 
             margin-bottom: 32px;
             line-height: 1.7;
         }
         
         .products-section { 
-            background: linear-gradient(135deg, #fef5e7 0%, #fff2d5 100%);
-            border: 2px solid #fed7aa;
-            border-radius: 12px; 
-            padding: 24px; 
             margin: 32px 0;
-            position: relative;
         }
         
         .products-title { 
-            font-size: 1.25rem; 
+            font-size: 20px; 
             font-weight: 700; 
-            color: #c05621;
-            margin-bottom: 16px;
+            color: #111827;
+            margin-bottom: 20px;
         }
         
         .product-item { 
-            background: white;
-            padding: 16px;
+            background: #ffffff;
+            padding: 20px;
             margin: 12px 0;
-            border-radius: 8px;
-            border-left: 4px solid #f56565;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
         
+        .product-item.urgent {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-color: #fca5a5;
+        }
+        
+        .product-item.warning {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-color: #fbbf24;
+        }
+        
         .product-info { flex: 1; }
         
         .product-name { 
-            font-weight: 600; 
-            color: #2d3748;
-            font-size: 1.1rem;
+            font-weight: 700; 
+            color: #111827;
+            font-size: 16px;
+            margin-bottom: 4px;
         }
         
         .product-category { 
-            color: #718096; 
-            font-size: 0.9rem;
-            margin-top: 4px;
+            color: #6b7280; 
+            font-size: 14px;
         }
         
         .expiry-badge { 
-            background: #fed7d7;
-            color: #c53030;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
             font-weight: 600;
             white-space: nowrap;
         }
         
         .expiry-today { 
-            background: #fbb6ce;
-            color: #b83280;
-            animation: pulse 2s infinite;
+            background: #dc2626;
+            color: white;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        .expiry-tomorrow {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .expiry-soon {
+            background: #6b7280;
+            color: white;
         }
         
         .suggestions { 
-            background: #f0fff4;
-            border: 2px solid #9ae6b4;
-            border-radius: 12px; 
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #bbf7d0;
+            border-radius: 16px; 
             padding: 24px; 
             margin: 32px 0;
         }
         
         .suggestions h3 { 
-            color: #22543d; 
-            font-size: 1.2rem; 
+            color: #059669; 
+            font-size: 20px; 
             font-weight: 700;
             margin-bottom: 16px;
         }
@@ -224,17 +236,19 @@ export const createEmailTemplate = (data) => {
         
         .suggestions li { 
             padding: 8px 0; 
-            color: #2f855a;
+            color: #047857;
             position: relative;
             padding-left: 24px;
+            font-size: 16px;
         }
         
         .suggestions li::before {
             content: '✓';
             position: absolute;
             left: 0;
-            color: #38a169;
+            color: #10b981;
             font-weight: bold;
+            font-size: 18px;
         }
         
         .cta-section { 
@@ -244,88 +258,121 @@ export const createEmailTemplate = (data) => {
         
         .cta-button { 
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);
             color: white; 
             padding: 16px 32px; 
             text-decoration: none; 
-            border-radius: 50px; 
-            font-weight: 700;
-            font-size: 1.1rem;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            border-radius: 12px; 
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
         }
         
         .stats { 
-            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
-            border-radius: 12px; 
-            padding: 24px; 
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px; 
+            padding: 32px; 
             margin: 32px 0;
             text-align: center;
         }
         
         .stats h3 { 
-            color: #234e52; 
-            margin-bottom: 16px;
-            font-size: 1.2rem;
+            color: #111827; 
+            margin-bottom: 24px;
+            font-size: 20px;
+            font-weight: 700;
         }
         
         .stats-grid { 
-            display: flex; 
-            justify-content: space-around; 
-            flex-wrap: wrap;
-            gap: 16px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
         }
         
         .stat-item { 
             text-align: center;
-            min-width: 120px;
         }
         
         .stat-number { 
-            font-size: 2rem; 
+            font-size: 32px; 
             font-weight: 700; 
-            color: #2c7a7b;
+            color: #2563eb;
             display: block;
+            margin-bottom: 8px;
         }
         
         .stat-label { 
-            color: #4a5568; 
-            font-size: 0.9rem;
-            margin-top: 4px;
+            color: #6b7280; 
+            font-size: 14px;
+            font-weight: 500;
         }
         
         .footer { 
-            background: #f8fafc;
-            padding: 32px 30px; 
+            background: #111827;
+            color: #d1d5db;
+            padding: 32px; 
             text-align: center; 
-            border-top: 1px solid #e2e8f0;
         }
         
         .footer-logo { 
-            font-size: 1.5rem; 
-            margin-bottom: 12px;
-            color: #4a5568;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .footer-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .footer-logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
         }
         
         .footer p { 
-            color: #718096; 
-            font-size: 0.9rem;
+            color: #9ca3af; 
+            font-size: 14px;
             margin: 8px 0;
         }
         
         .footer-links { 
-            margin: 16px 0;
+            margin: 20px 0;
         }
         
         .footer-links a { 
-            color: #667eea; 
+            color: #d1d5db; 
             text-decoration: none; 
-            margin: 0 12px;
-            font-size: 0.9rem;
+            margin: 0 16px;
+            font-size: 14px;
+        }
+        
+        .quote {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 32px;
+            font-size: 16px;
+            padding: 24px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border-left: 4px solid #2563eb;
         }
         
         @media (max-width: 600px) {
             .email-container { 
-                margin: 10px; 
+                margin: 8px; 
                 border-radius: 12px;
             }
             
@@ -334,14 +381,32 @@ export const createEmailTemplate = (data) => {
                 padding-right: 20px;
             }
             
+            .content {
+                padding: 32px 20px;
+            }
+            
             .product-item { 
                 flex-direction: column; 
                 align-items: flex-start; 
                 gap: 12px;
+                padding: 16px;
             }
             
             .expiry-badge { 
                 align-self: flex-end;
+            }
+            
+            .stats-grid { 
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .greeting {
+                font-size: 20px;
+            }
+            
+            .intro-text {
+                font-size: 16px;
             }
         }
     </style>
@@ -349,25 +414,28 @@ export const createEmailTemplate = (data) => {
 <body>
     <div class="email-container">
         <div class="header">
-            <div class="logo">🥬</div>
-            <h1>¡Alerta Neverafy!</h1>
-            <p>Algunos productos necesitan tu atención</p>
+            <div class="header-logo">
+                <div class="logo-icon">N</div>
+                <div class="logo-text">Neverafy</div>
+            </div>
+            <h1>Productos que requieren atención</h1>
+            <p>Algunos productos de tu nevera vencen pronto</p>
         </div>
         
         <div class="content">
-            <div class="greeting">¡Hola ${userName}! 👋</div>
+            <div class="greeting">Hola ${userName},</div>
             
             <div class="intro-text">
-                Te escribimos para recordarte que tienes <strong>${productCount} producto${pluralText}</strong> que ${verbText} pronto. ¡Vamos a evitar que se desperdicien!
+                Te escribimos para recordarte que tienes <strong>${productCount} producto${pluralText}</strong> que ${verbText} pronto. Te ayudamos a evitar que se desperdicien y ahorres dinero.
             </div>
             
             <div class="products-section">
-                <div class="products-title">⏰ Productos que requieren atención:</div>
+                <div class="products-title">Productos que vencen pronto:</div>
                 ${productsHtml}
             </div>
             
             <div class="suggestions">
-                <h3>💡 ¿Qué puedes hacer?</h3>
+                <h3>¿Qué puedes hacer?</h3>
                 <ul>
                     <li><strong>Úsalos hoy:</strong> Prepara una receta con estos ingredientes</li>
                     <li><strong>Compártelos:</strong> Ofrécelos a vecinos, familia o amigos</li>
@@ -378,13 +446,13 @@ export const createEmailTemplate = (data) => {
             
             <div class="cta-section">
                 <a href="${appUrl}/dashboard" class="cta-button">
-                    🥬 Ver Mi Nevera
+                    Ver Mi Nevera
                 </a>
             </div>
             
             ${userStats ? `
             <div class="stats">
-                <h3>🌍 Tu impacto hasta ahora:</h3>
+                <h3>Tu impacto hasta ahora:</h3>
                 <div class="stats-grid">
                     <div class="stat-item">
                         <span class="stat-number">€${userStats.total_saved || 0}</span>
@@ -402,15 +470,18 @@ export const createEmailTemplate = (data) => {
             </div>
             ` : ''}
             
-            <div style="text-align: center; color: #4a5568; font-style: italic; margin-top: 32px;">
-                "Cada producto que salvas marca la diferencia. ¡Sigue así!" 🌱
+            <div class="quote">
+                "Cada producto que salvas marca la diferencia. ¡Sigue así!"
             </div>
         </div>
         
         <div class="footer">
-            <div class="footer-logo">🥬 Neverafy</div>
+            <div class="footer-logo">
+                <div class="footer-logo-icon">N</div>
+                <div class="footer-logo-text">Neverafy</div>
+            </div>
             <p>Tu nevera inteligente que cuida el planeta</p>
-            <p style="font-size: 0.8rem; color: #a0aec0; margin-top: 16px;">
+            <p style="font-size: 12px; margin-top: 16px;">
                 Recibes este email porque tienes notificaciones activadas en Neverafy
             </p>
             
@@ -420,8 +491,8 @@ export const createEmailTemplate = (data) => {
                 <a href="${unsubscribeUrl}">Cancelar alertas</a>
             </div>
             
-            <p style="font-size: 0.8rem; color: #a0aec0; margin-top: 16px;">
-                © 2025 Neverafy - Hecho con ❤️ para reducir el desperdicio alimentario
+            <p style="font-size: 11px; color: #6b7280; margin-top: 16px;">
+                © 2025 Neverafy - Todos los derechos reservados
             </p>
         </div>
     </div>
