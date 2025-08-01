@@ -35,23 +35,24 @@ const LandingPageModern: React.FC = () => {
             <div className="lg:col-span-6">
               <div className="text-center lg:text-left">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                  Lleva tu nevera al
-                  <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    siguiente nivel
+                  <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                    Nunca más
                   </span>
+                  <br />
+                  tires comida
                 </h1>
                 
                 <p className="mt-6 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0">
-                  Nunca más desperdicies comida. Organiza tu nevera con inteligencia artificial,
-                  ahorra dinero y cuida el planeta.
+                  Organiza tu nevera con IA, recibe alertas antes de que caduquen tus alimentos y ahorra hasta 40€ al mes. Rápido, fácil y sin esfuerzo.
                 </p>
 
                 <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <a 
                     href="/register" 
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all hover:scale-105 text-center"
+                    className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all hover:scale-105 text-center flex items-center justify-center gap-2"
                   >
-                    Solicitar Acceso Gratuito
+                    <span className="text-xl">🚀</span>
+                    Empezar Gratis Ahora
                   </a>
                   <a 
                     href="/login" 
@@ -68,7 +69,7 @@ const LandingPageModern: React.FC = () => {
                       <div className="w-8 h-8 bg-purple-500 rounded-full border-2 border-white"></div>
                       <div className="w-8 h-8 bg-pink-500 rounded-full border-2 border-white"></div>
                     </div>
-                    <span className="text-sm text-gray-600">+1,247 familias ahorrando</span>
+                    <span className="text-sm text-gray-600">— Más de <strong>1.200 familias</strong> ya están ahorrando con Neverafy</span>
                   </div>
                   <div className="flex items-center space-x-1">
                     <div className="flex text-yellow-400">
@@ -221,25 +222,64 @@ const LandingPageModern: React.FC = () => {
           </div>
 
           <div className="max-w-2xl mx-auto">
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-sm text-center">
-              <div className="flex justify-center text-yellow-400 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                  </svg>
-                ))}
-              </div>
-              <p className="text-gray-600 mb-6 text-lg">
-                "Desde que uso Neverafy he reducido el desperdicio a la mitad. 
-                Las alertas me avisan justo a tiempo y las recetas con IA son increíbles."
-              </p>
-              <div className="flex items-center justify-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mr-4 flex items-center justify-center">
-                  <span className="text-white font-bold">A</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-gray-50 rounded-2xl p-8 shadow-sm">
+                <div className="flex justify-center text-yellow-400 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-lg">⭐</span>
+                  ))}
                 </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Ana Martínez</h4>
-                  <p className="text-sm text-gray-500">Madre de familia, Madrid</p>
+                <p className="text-gray-600 mb-6 text-lg italic">
+                  "Desde que uso Neverafy, nunca más he tirado leche caducada. Las alertas llegan justo a tiempo."
+                </p>
+                <div className="flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-blue-600 rounded-full mr-4 flex items-center justify-center">
+                    <span className="text-white font-bold">A</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Ana Martínez</h4>
+                    <p className="text-sm text-gray-500">madre de familia, Madrid</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-2xl p-8 shadow-sm">
+                <div className="flex justify-center text-yellow-400 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-lg">⭐</span>
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-6 text-lg italic">
+                  "Me encantan las recetas que genera, son prácticas y aprovechan todo lo que ya tengo."
+                </p>
+                <div className="flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-blue-600 rounded-full mr-4 flex items-center justify-center">
+                    <span className="text-white font-bold">L</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Laura G.</h4>
+                    <p className="text-sm text-gray-500">estudiante</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-2xl p-8 shadow-sm">
+                <div className="flex justify-center text-yellow-400 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-lg">⭐</span>
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-6 text-lg italic">
+                  "He ahorrado más de 100 euros este año solo por no desperdiciar comida."
+                </p>
+                <div className="flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-blue-600 rounded-full mr-4 flex items-center justify-center">
+                    <span className="text-white font-bold">C</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Carlos y Marta</h4>
+                    <p className="text-sm text-gray-500">pareja joven</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -263,8 +303,7 @@ const LandingPageModern: React.FC = () => {
             {/* Plan Gratuito */}
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 relative">
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Gratuito</h3>
-                <p className="text-gray-600 mb-4">Perfecto para empezar</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Gratuito - Ideal para empezar</h3>
                 <div className="text-4xl font-bold text-gray-900 mb-2">
                   0€
                   <span className="text-lg font-normal text-gray-500">/mes</span>
@@ -288,7 +327,7 @@ const LandingPageModern: React.FC = () => {
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>5 recetas con IA/mes</span>
+                  <span>5 recetas al mes</span>
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -316,12 +355,11 @@ const LandingPageModern: React.FC = () => {
               
               <div className="text-center mb-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
-                <p className="text-gray-600 mb-4">Para familias activas</p>
-                <div className="text-4xl font-bold text-gray-900 mb-2">
+                <div className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
                   4,99€
                   <span className="text-lg font-normal text-gray-500">/mes</span>
                 </div>
-                <p className="text-sm text-gray-500">Facturado mensualmente</p>
+                <p className="text-sm text-gray-500">(facturado mensual)</p>
               </div>
               
               <ul className="space-y-4 mb-8">
@@ -335,31 +373,31 @@ const LandingPageModern: React.FC = () => {
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span className="font-semibold">Alertas inteligentes avanzadas</span>
+                  <span className="font-semibold">Recetas ilimitadas</span>
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span className="font-semibold">Recetas ilimitadas con IA</span>
+                  <span>OCR automático</span>
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>Escaneo automático con OCR</span>
+                  <span>Lista de la compra</span>
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>Lista de compras inteligente</span>
+                  <span>Soporte prioritario</span>
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  <span>Estadísticas avanzadas</span>
+                  <span>Estadísticas básicas</span>
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -395,10 +433,10 @@ const LandingPageModern: React.FC = () => {
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            ¿Listo para una nevera inteligente?
+            ¿Listo para tener una nevera inteligente?
           </h2>
           <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-            Únete a más de 1,000 familias que ya están ahorrando dinero y cuidando el planeta.
+            Empieza hoy y ahorra desde tu próxima comida.
           </p>
           <a 
             href="/register" 
